@@ -13,28 +13,40 @@ def input_grades(request, advisory_id):
         if form.is_valid():
             subject = form.cleaned_data['subject']
             semester = form.cleaned_data['semester']
+            quarter = form.cleaned_data['quarter']
             excel_file = request.FILES['excel_file']
-            
+
             df = pd.read_excel(excel_file)
-            
-            print(f"\n\n{df.columns}\n\n")
 
             for index, row in df.iterrows():
-                lrn_column_name = 'LRN' 
+                lrn_column_name = 'LRN'
                 lrn = row[lrn_column_name]
                 student = advisory.students.filter(lrn=lrn).first()
 
                 if student:
                     value = row[subject.name]
-                    Grade.objects.create(
+                    existing_grade = Grade.objects.filter(
                         student=student,
                         advisory=advisory,
                         subject=subject,
                         semester=semester,
-                        value=float(value)
-                    )
+                        quarter=quarter
+                    ).first()
 
-            return redirect('success_page')  
+                    if existing_grade:
+                        existing_grade.value = float(value)
+                        existing_grade.save()
+                    else:
+                        Grade.objects.create(
+                            student=student,
+                            advisory=advisory,
+                            subject=subject,
+                            semester=semester,
+                            quarter=quarter,
+                            value=float(value)
+                        )
+
+            return redirect('success_page')
     else:
         form = GradeImportForm()
 

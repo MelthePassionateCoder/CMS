@@ -9,19 +9,34 @@
     <link rel="stylesheet" type="text/css" media="print" href="{% static 'advisory/print.css' %}">
 </head>
 <body>
+    <!-- HEADER FILTERS -->
     <header class="no-print">
         <h1>Report Cards for Advisory: {{ advisory.section }}</h1>
         <label>
             <input type="checkbox" id="toggleSchoolText"> Show School Text
         </label>
-        <input type="checkbox" id="removeContentCheckbox"> Show Content
+        <input type="checkbox" id="showFirstSem"> Show First Sem Info
+        <input type="checkbox" id="showSecondSem"> Show Second Sem Info
+        <input type="checkbox" id="removeContentCheckbox"> Show Additional Content
         <input type="checkbox" id="removeBorderCheckbox"> Remove Table Border
         <button onclick="printReportCard()">Print Report Card</button>
         <script>
             function printReportCard() {
                 window.print();
             }
-    
+            
+            document.getElementById('showFirstSem').addEventListener('change', function () {
+                const firstsemElements = document.querySelectorAll('.firstsem-info');
+                firstsemElements.forEach(content => {
+                content.style.visibility = showFirstSem.checked ? 'visible' : 'hidden';
+                });
+            });
+            document.getElementById('showSecondSem').addEventListener('change', function () {
+                const secondsemElements = document.querySelectorAll('.secondsem-info');
+                secondsemElements.forEach(content => {
+                content.style.visibility = showSecondSem.checked ? 'visible' : 'hidden';
+                });
+            });
             document.getElementById('toggleSchoolText').addEventListener('change', function () {
                 var schoolTextElements = document.querySelectorAll('.school-text p');
                 for (var i = 0; i < schoolTextElements.length; i++) {
@@ -32,14 +47,15 @@
                 const removeContentCheckbox = document.getElementById('removeContentCheckbox');
                 const removeBorderCheckbox = document.getElementById('removeBorderCheckbox');
                 const additionalContent = document.querySelectorAll('.report-card .additional-content');
-                const attendanceTables = document.querySelectorAll('.report-card .attendance table');
+                const attendanceTables = document.querySelectorAll('.first-sem-attendance td, th');
 
                 additionalContent.forEach(content => {
                 content.style.visibility = removeContentCheckbox.checked ? 'visible' : 'hidden';
                 });
 
                 attendanceTables.forEach(table => {
-                    table.style.border = removeBorderCheckbox.checked ? 'none' : '1px solid black';
+                    table.style.border = removeBorderCheckbox.checked ? 'hidden' : '1px solid black';
+                    table.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
                 });
             }
 
@@ -58,11 +74,9 @@
         SEM
             ATTENDANCE -->
         <div class="attendance">
-            <br>
+        <br>
         <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>REPORT ON ATTENDANCE</b></p>
-        <div class="attendance-first">
         <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>First Semester</b></p>
-        </div>
         <div class="first-sem-attendance mt-2">
             <table>
                 <thead>
@@ -78,45 +92,45 @@
                     <tr>
                         <td><span class="additional-content"><p class="arial-narrow font-8"  style="margin:0;padding:0;">No. of <br>school<br>days<br><br></p></span></td>
                         {% for month in student.school_months.school_months %}
-                            <td style="text-align:center;">{{ month.school_days }}</td>
+                            <td style="text-align:center;"><span class="firstsem-info">{{ month.school_days }}</span></td>
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.school_months.total_school_days }}</td>
+                        <td style="text-align:center;"><span class="firstsem-info">{{ student.school_months.total_school_days }}</span></td>
                     </tr>
                     <tr>
                         <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
                         {% for month in student.school_months.school_months %}
                             {% for entry in student.attendance_data %}
                                 {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;">{{ entry.days_present }}</td>
+                                    <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_present }}</span></td>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.total_days_present }}</td>
+                        <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_present }}</span></td>
                     </tr>
                     <tr>
                         <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
                         {% for month in student.school_months.school_months %}
                             {% for entry in student.attendance_data %}
                                 {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;">{{ entry.days_absent }}</td>
+                                    <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_absent }}</span></td>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.total_days_absent }}</td>
+                        <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_absent }}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-    </div>
-            <p class="arial-narrow font-9" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
-            <table class="arial-narrow font-9" style="width:50%;margin:auto;padding:0;">
-                <tr>
-                    <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
-                </tr>
-                <tr>
-                    <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
-                </tr>
-            </table>
+        </div>
+        <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
+        <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
+            <tr>
+                <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
+            </tr>
+            <tr>
+                <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
+            </tr>
+        </table>
           
         
         <br><br>
@@ -126,66 +140,65 @@
             ATTENDANCE
         -->
         <div class="attendance">
-        <div class="attendance-first">
-        <p class="arial-narrow font-9" style="margin:0;"><b>Second Semester</b></p>
-        </div>
+        <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>Second Semester</b></p>
         <div class="first-sem-attendance mt-2">
             <table>
                 <thead>
                     <tr>
                         <th></th>
                         {% for month in student.school_months.school_months %}
-                            <th class="arial-narrow font-8 table-background-color">{{ month.month_name }}</th>
+                            <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
                         {% endfor %}
-                        <th class="arial-narrow font-8 table-background-color">Total</th>
+                        <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="arial-narrow font-8" style="margin-top:0;">No. of <br>school<br>days<br><br></td>
+                        <td class="arial-narrow font-8" style="margin-top:0;"><span class="additional-content">No. of <br>school<br>days<br><br></span></td>
                         {% for month in student.school_months.school_months %}
-                            <td style="text-align:center;">{{ month.school_days }}</td>
+                            <td style="text-align:center;"><span class="secondsem-info">{{ month.school_days }}</span></td>
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.school_months.total_school_days }}</td>
+                        <td style="text-align:center;"><span class="secondsem-info">{{ student.school_months.total_school_days }}</span></td>
                     </tr>
                     <tr>
-                        <td class="arial-narrow font-8">No. of <br>days<br>present<br><br></td>
+                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
                         {% for month in student.school_months.school_months %}
                             {% for entry in student.attendance_data %}
                                 {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;">{{ entry.days_present }}</td>
+                                    <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_present }}</span></td>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.total_days_present }}</td>
+                        <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_present }}</span></td>
                     </tr>
                     <tr>
-                        <td class="arial-narrow font-8">No. of <br>days<br>absent<br><br></td>
+                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
                         {% for month in student.school_months.school_months %}
                             {% for entry in student.attendance_data %}
                                 {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;">{{ entry.days_absent }}</td>
+                                    <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_absent }}</span></td>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}
-                        <td style="text-align:center;">{{ student.total_days_absent }}</td>
+                        <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_absent }}</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-            <p class="arial-narrow font-9" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
-            <table class="arial-narrow font-9" style="width:50%;margin:auto;padding:0;">
-                <tr>
-                    <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
-                </tr>
-                <tr>
-                    <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
-                </tr>
-            </table>
-          
         </div>
+        <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
+        <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
+            <tr>
+                <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
+            </tr>
+            <tr>
+                <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
+            </tr>
+        </table>
+          
+        
     </div>
-    <div class="card right">
+    <div class="card right additional-content">
         <p class="sf-9-shs-text arial-narrow">SF-9-SHS</p>
         <br>
         <header class="school-info">
@@ -224,7 +237,7 @@
                     </tr>
                     <tr>
                         <td>Age:</td>
-                        <td style="border-bottom: 1px solid black;">18</td>
+                        <td style="border-bottom: 1px solid black;"><span class="secondsem-info">18</span></td>
                         <td>Sex:</td>
                         <td style="border-bottom: 1px solid black;"><b>{{ student.student.get_gender_display }}</b></td>
                     </tr>
