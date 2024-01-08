@@ -1,0 +1,19 @@
+{% extends "student/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>Input Observed Values</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" name="manual_input">Save Observed Value</button>
+    <button type="submit" name="excel_input">Import from Excel</button>
+</form>
+
+<h2>Existing Observed Values</h2>
+<ul>
+    {% for observed_value in observed_values %}
+        <li>{{ observed_value }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'student/base.html' %} 
+{% block content %}
+  
+    <h1>Update Student</h1>
+
+    <form method="post" action="">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Update Student</button>
+    </form>
+
+    <a href="{% url 'student-detail' student.id %}" class="btn btn-secondary">Back to Student Detail</a>
+    <a href="{% url 'student-list' %}" class="btn btn-info">Back to Student List</a>
+  
+{% endblock %}

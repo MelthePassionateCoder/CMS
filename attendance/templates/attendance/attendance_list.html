@@ -1,0 +1,36 @@
+{% extends "student/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>Attendance List for Advisory {{ advisory.section }}</h1>
+
+<form method="get" action="{% url 'attendance-list' advisory_id=advisory.id %}">
+    <input type="text" name="student_name_filter" placeholder="Search by student name">
+    <button type="submit">Search</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            <th>Date</th>
+            <th>Morning In</th>
+            <th>Morning Out</th>
+            <th>Afternoon In</th>
+            <th>Afternoon Out</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student_attendance in students_attendance %}
+            <tr>
+                <td>{{ student_attendance.student.complete_name }}</td>
+                <td>{{ student_attendance.date }}</td>
+                <td>{{ student_attendance.morning_in_status }}</td>
+                <td>{{ student_attendance.morning_out_status }}</td>
+                <td>{{ student_attendance.afternoon_in_status }}</td>
+                <td>{{ student_attendance.afternoon_out_status }}</td>
+                <td>{{ student_attendance.day_status }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

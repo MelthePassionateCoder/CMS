@@ -1,0 +1,31 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+  <h2>Advisory List</h2>
+  <a href="{% url 'advisory-create' %}" class="btn btn-primary">Add New Advisory</a>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>School Year</th>
+        <th>Section</th>
+        <th>Strand</th>
+        <th>Adviser</th>
+        <!-- <th>Students</th> -->
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for advisory in advisories %}
+        <tr>
+          <td>SY{{ advisory.get_school_year_display }}</td>
+          <td>{{ advisory.section }}</td>
+          <td>{{ advisory.strand }}</td>
+          <td>{{ advisory.adviser.username }}</td>
+          <td>
+            <a href="{% url 'advisory-detail' advisory.id %}" class="btn btn-info">View Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

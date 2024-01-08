@@ -1,0 +1,15 @@
+{% extends "student/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h2>Create Advisory</h2>
+        <form method="POST" class="mt-3">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Create</button>
+            </div>
+        </form>
+{% endblock content %}

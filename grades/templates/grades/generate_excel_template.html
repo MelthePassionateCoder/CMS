@@ -1,0 +1,9 @@
+{% extends "student/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>Generate Excel Template</h1>
+
+<p>Click the link below to download the Excel template:</p>
+<a href="{% static excel_filename %}" download>Download Excel Template</a>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'student/base.html' %} 
+{% block content %}
+
+  <h2>{{ advisory.school_year }} - {{ advisory.section }} - {{ advisory.strand }}</h2>
+  <a href="{% url 'add-students' advisory.id %}" class="btn btn-primary">Add More Students</a>
+  <a href="{% url 'advisory-update' advisory.id %}" class="btn btn-secondary">Update Advisory</a>
+  <a href="{% url 'advisory-delete' advisory.id %}" class="btn btn-danger">Delete Advisory</a>
+  <a href="{% url 'advisory-list' %}" class="btn btn-info">Back to Advisory List</a>
+  <a href="{% url 'report_cards_page' advisory.id %}" class="btn btn-info">Report Card</a>
+  
+  <div class="card mb-4 mt-3">
+    <div class="card-header">
+      <h2>Adviser: {{ advisory.adviser.username }}</h2>
+      <a href="{% url 'upload_attendance' advisory_id=advisory.id %}" class="btn btn-info">Upload Attendance</a>
+      <a href="{% url 'upload_manual_input' advisory_id=advisory.id %}" class="btn btn-info">Manual Input Attendance</a>
+      <a href="{% url 'attendance-list' advisory_id=advisory.id %}" class="btn btn-info">Attendance List</a>
+      <a href="{% url 'grade_input' advisory_id=advisory.id %}" class="btn btn-info">Input Grades</a>
+      <a href="{% url 'input_observed_values' advisory_id=advisory.id %}" class="btn btn-info">Input Grades Observed Values</a>
+    </div>
+    <div class="card-body">
+      <h3>Students:</h3>
+      {% if advisory.students.all %}
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Complete Name</th>
+              <th>Gender</th>
+              <th>Birth Cert Status</th>
+              <th>Action</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in advisory.students.all %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.complete_name }}</td>
+                <td>{{ student.gender }}</td>
+                <td>{% if student.birth_cert %}Present{% else %}Not Present{% endif %}</td>
+                <td><a href="{% url 'student-detail' student.id %}" class="btn btn-info">View Details</a></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No students added to this advisory yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+{% endblock %}

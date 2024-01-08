@@ -1,0 +1,12 @@
+{% extends 'student/base.html' %} 
+{% block content %}
+  <h2>Add Students to Advisory</h2>
+
+  <form method="post" action="{% url 'add-students' advisory.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Students</button>
+  </form>
+
+  <a href="{% url 'advisory-detail' advisory.id %}" class="btn">Back to Advisory Detail</a>
+{% endblock %}

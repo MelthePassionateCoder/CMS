@@ -1,0 +1,17 @@
+{% extends 'student/base.html' %} 
+{% block content %}
+    <h2>{{ student.lrn }} Details</h2>
+    <a href="{% url 'student-list' %}" class="btn btn-secondary mt-3">Back to Student List</a>
+    <a href="{% url 'student-update' student.id %}" class="btn btn-secondary mt-3">Update Student</a>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h5 class="card-title">Name: {{ student.complete_name }}</h5>
+            <p class="card-text">Gender: {{ student.gender }}</p>
+            <p class="card-text">Date of Birth: {{ student.date_of_birth }}</p>
+            <p class="card-text">Birth Cert.: {{ student.birth_cert }}</p>
+        </div>
+    </div>
+
+    
+
+{% endblock content %}

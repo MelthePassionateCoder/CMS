@@ -1,0 +1,14 @@
+{% extends 'student/base.html' %}
+{% block content %}
+    <h2>Delete Advisory</h2>
+
+    <p>Are you sure you want to delete the advisory "{{ advisory.school_year }} - {{ advisory.section }} - {{ advisory.strand }}"?</p>
+
+    <form method="post" action="">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Delete Advisory</button>
+    </form>
+
+    <a href="{% url 'advisory-detail' advisory.id %}" class="btn btn-secondary">Cancel</a>
+  
+{% endblock %}

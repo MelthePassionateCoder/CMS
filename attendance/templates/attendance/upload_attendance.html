@@ -1,0 +1,18 @@
+{% extends "student/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h1>Upload Attendance</h1>
+
+{% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+    
+    <button type="submit">Upload Attendance</button>
+</form>
+    <a href="" class="btn btn-secondary">Back to Attendance List</a>
+{% endblock %}

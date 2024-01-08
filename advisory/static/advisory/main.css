@@ -1,0 +1,166 @@
+@page {
+    size: 8.5in 13in;
+    margin: 0; 
+    padding:0;
+}
+
+body {
+    
+    margin: 0; 
+    padding: 0; 
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+}
+
+.report-card {
+    box-sizing: border-box;
+    padding: 0; 
+    width:100%;
+    
+}
+.report-card:nth-child(1n) {
+    page-break-after: always;
+}
+.card {
+    width: 50%;
+    box-sizing: border-box; 
+    padding:0; 
+}
+.school-info {
+    width:100%;
+    height: 150px;
+}
+.school-text {
+    width: 50%;
+    margin:0;
+    text-align:center;
+    float:left;
+}
+.school-logo, .deped-logo {
+    width: 25%;
+    margin:0;
+    text-align:center;
+    float:left;
+    
+}
+.school-text p{
+    margin:0;
+    text-align: center;
+}
+
+.sf-9-shs-text {
+    float: right;
+    padding:0px;
+    font-size: 9pt;
+    
+}
+
+
+.arial-narrow {
+    font-family: 'Arial Narrow';
+}
+.arial {
+    font-family: Arial;
+}
+.century {
+    font-family: Century;
+}
+/** FONT SIZES **/
+.font-8 {
+    font-size: 8pt;
+}
+.font-9 {
+    font-size: 9pt;
+}
+/** HEADER FRONT **/
+.deped-logo img, .school-logo img {
+    width: 100px;
+    height: 100px;
+    
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+/** HEADER FRONT **/
+.student-info table {
+    width:90%;
+    margin:auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.student-info td, .student-info th {
+    padding: 0; 
+    margin:0;
+
+}
+
+.principal-adviser table {
+    width:100%;
+    margin:auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-align: center;
+}
+.principal-adviser td, .student-info th {
+    padding: 0px; 
+
+}
+.parents {
+    width: 90%;
+    margin:auto;
+}
+.parents p {
+    margin: 0;
+}
+.certificate-transfer table {
+    width:90%;
+    margin:auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.certificate-transfer td, .certificate-transfer th {
+    padding: 0;
+    margin:0;
+
+}
+.certificate-transfer p {
+    margin: 0;
+}
+.first-sem-attendance table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    height: 100%;
+    margin:auto;
+    
+}
+.first-sem-attendance td, th {
+    width: 12.5%; 
+    height: 25%; 
+    border: 1px solid black;
+}
+.first-sem-attendance th {
+    background-color: #EEECE1;
+}
+/** MARGIN-TOP **/
+.mt-2 {
+    margin-top:2px;
+}
+.mt-3 {
+    margin-top:3px;
+}
+.mt-4 {
+    margin-top:4px;
+}
+.mt-5 {
+    margin-top:5px;
+}
+.mt-30 {
+    margin-top:30px;
+}
+/** MARGIN-TOP **/

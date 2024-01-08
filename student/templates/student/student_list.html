@@ -1,0 +1,27 @@
+{% extends 'student/base.html' %}  
+{% block content %}
+  <h2>Student List</h2>
+    <a href="{% url 'student-create' %}" class="btn btn-primary">Add New Student</a>
+  <table class="table table-bordered mt-3">
+      <thead>
+          <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Gender</th>
+              <th scope="col">Date of Birth</th>
+              <th scope="col">Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for student in students %}
+              <tr>
+                  <td>{{ student.complete_name }}</td>
+                  <td>{{ student.gender }}</td>
+                  <td>{{ student.date_of_birth }}</td>
+                  <td>
+                    <a href="{% url 'student-detail' student.id %}" class="btn btn-info">View Details</a>
+                  </td>
+              </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+{% endblock %}

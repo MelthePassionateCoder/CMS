@@ -1,0 +1,16 @@
+@media print {
+    @page {
+        size: 8.5in 13in; 
+        margin: 0.3cm;
+        padding:0;
+    }
+    .hidden {
+        display: none;
+    }
+    .no-print {
+        display: none;
+    }
+    .first-sem-attendance th {
+        background-color: #EEECE1;
+    }
+    }
