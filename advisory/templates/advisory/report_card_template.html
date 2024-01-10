@@ -12,9 +12,15 @@
     <!-- HEADER FILTERS -->
     <header class="no-print">
         <h1>Report Cards for Advisory: {{ advisory.section }}</h1>
-        <label>
+        <!-- <label>
             <input type="checkbox" id="toggleSchoolText"> Show School Text
-        </label>
+        </label> -->
+        <label for="pageSelection">Select Page:</label>
+        <select id="pageSelection">
+            <option value="front">Front Page</option>
+            <option value="back">Back Page</option>
+        </select>
+        <button onclick="printReportCard()">Print Report Card</button>
         <input type="checkbox" id="showFirstSem"> Show First Sem Info
         <input type="checkbox" id="showSecondSem"> Show Second Sem Info
         <input type="checkbox" id="removeContentCheckbox"> Show Additional Content
@@ -35,6 +41,20 @@
                 const secondsemElements = document.querySelectorAll('.secondsem-info');
                 secondsemElements.forEach(content => {
                 content.style.visibility = showSecondSem.checked ? 'visible' : 'hidden';
+                });
+            });
+            document.getElementById('pageSelection').addEventListener('change', function () {
+                const pageSelection = this.value;
+                const frontPageElements = document.querySelectorAll('.front-page');
+                const backPageElements = document.querySelectorAll('.back-page');
+
+                
+                frontPageElements.forEach(content => {
+                    content.style.display = pageSelection === 'front' ? 'block' : 'none';
+                });
+
+                backPageElements.forEach(content => {
+                    content.style.display = pageSelection === 'back' ? 'block' : 'none';
                 });
             });
             document.getElementById('toggleSchoolText').addEventListener('change', function () {
@@ -61,7 +81,8 @@
 
             document.getElementById('removeContentCheckbox').addEventListener('change', toggleContent);
             document.getElementById('removeBorderCheckbox').addEventListener('change', toggleContent);
-
+            document.getElementById('pageSelection').value = 'front';
+            document.getElementById('pageSelection').dispatchEvent(new Event('change'));
             toggleContent();
 
         </script>
@@ -69,6 +90,7 @@
 {% for student in students %}
 
 <div class="report-card">
+    <div class="front-page">
     <div class="card left">
         <!-- FIRST
         SEM
@@ -321,6 +343,10 @@
         </div>
     </div>
     </div>
+    <div class="back-page">
+        <h2>Back Page</h2>
+    </div>
+</div>
 {% endfor %}
 </body>
 </html>
