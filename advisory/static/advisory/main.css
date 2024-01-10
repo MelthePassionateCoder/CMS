@@ -57,7 +57,9 @@ body {
     
 }
 
-
+.calibri {
+    font-family: 'Calibri',sans-serif;
+}
 .arial-narrow {
     font-family: 'Arial Narrow';
 }

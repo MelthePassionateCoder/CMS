@@ -20,7 +20,6 @@
             <option value="front">Front Page</option>
             <option value="back">Back Page</option>
         </select>
-        <button onclick="printReportCard()">Print Report Card</button>
         <input type="checkbox" id="showFirstSem"> Show First Sem Info
         <input type="checkbox" id="showSecondSem"> Show Second Sem Info
         <input type="checkbox" id="removeContentCheckbox"> Show Additional Content
@@ -344,7 +343,18 @@
     </div>
     </div>
     <div class="back-page">
-        <h2>Back Page</h2>
+        <div class="card-right">
+
+        </div>
+        <div class="card-left">
+            <p class="calibri font-9"><b>REPORT ON LEARNING PROGRESS AND ACHIEVEMENT</b></p>
+            <div class="firstsem-grade">
+                <p class="calibri font-9"><b>First Semester</b></p>
+                <table>
+
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 {% endfor %}
