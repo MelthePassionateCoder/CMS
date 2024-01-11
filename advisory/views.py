@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import CreateView,ListView, DetailView, FormView, UpdateView, DeleteView
 from .models import Advisory
 from attendance.models import DailyAttendance, SchoolMonth, MonthlyAttendanceManual
+from grades.models import Subject, Grade
 from .forms import AdvisoryForm, AddStudentForm
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
@@ -9,7 +10,7 @@ from attendance.models import DailyAttendance
 from student.models import Student
 from xhtml2pdf import pisa
 from django.views import View
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Case, When, DecimalField
 from django.db.models.functions import TruncMonth
 # Create your views here.
 class AdvisoryCreateView(CreateView):
@@ -85,17 +86,30 @@ def report_cards_page(request, advisory_id):
         total_days_present = student_attendance.aggregate(total_days_present=Sum('days_present'))['total_days_present'] or 0
         total_days_absent = student_attendance.aggregate(total_days_absent=Sum('days_absent'))['total_days_absent'] or 0
         monthly_attendance_data = student_attendance.values('student__complete_name', 'month__month_name', 'days_present', 'days_absent')
-        
+        grades = Grade.objects.filter(advisory__id=advisory_id, student__complete_name=student)
+        student_grades_first_quarter = get_grades(advisory_id, student, '1','1')
+
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
             'total_days_present': total_days_present,
             'total_days_absent': total_days_absent,
             'school_months':school_month,
+            '1st_grade':student_grades_first_quarter
+            
         }
         student_data.append(student_info)
     return render(request, 'advisory/report_card_template.html', {'advisory': advisory, 'students':student_data})
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)
 
-    
+def get_grades(advisory,student,semester,quarter):
+    grades = Grade.objects.filter(
+            advisory__id=advisory,
+            student__complete_name=student,
+            semester__name=semester,  
+            quarter__name=quarter   
+            ).order_by('subject__category', 'subject__order')
+    for grade in grades:
+        grade_subj = {'subject':grade.subject, 'grade':grade.value}
+        return grade_subj

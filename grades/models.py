@@ -3,8 +3,14 @@ from advisory.models import Advisory
 from student.models import Student
 
 class Subject(models.Model):
+    CATEGORY_CHOICES = [
+        ('core', 'Core'),
+        ('applied', 'Applied'),
+        ('specialized', 'Specialized'),
+    ]
     name = models.CharField(max_length=100)
     order = models.IntegerField()
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='core')
 
     def __str__(self):
         return self.name
