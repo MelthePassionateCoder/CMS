@@ -149,6 +149,20 @@ body {
 .first-sem-attendance th {
     background-color: #EEECE1;
 }
+
+.firstsem-grade table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    height: 100%;
+    margin:auto;
+    
+}
+.firstsem-grade td, th {
+    width: 12.5%; 
+    height: 25%; 
+    border: 1px solid black;
+}
 /** MARGIN-TOP **/
 .mt-2 {
     margin-top:2px;
