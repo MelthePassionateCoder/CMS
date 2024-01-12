@@ -88,7 +88,7 @@ def report_cards_page(request, advisory_id):
         monthly_attendance_data = student_attendance.values('student__complete_name', 'month__month_name', 'days_present', 'days_absent')
         grades = Grade.objects.filter(advisory__id=advisory_id, student__complete_name=student)
         student_grades_first_quarter = get_grades(advisory_id, student, '1','1')
-
+        print(student_grades_first_quarter)
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
@@ -111,5 +111,5 @@ def get_grades(advisory,student,semester,quarter):
             quarter__name=quarter   
             ).order_by('subject__category', 'subject__order')
     for grade in grades:
-        grade_subj = {'subject':grade.subject, 'grade':grade.value}
+        grade_subj = {'subject':grade.subject, 'grade':grade.value, 'category':grade.subject.category}
         return grade_subj

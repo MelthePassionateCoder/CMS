@@ -29,6 +29,25 @@
             function printReportCard() {
                 window.print();
             }
+            document.getElementById('removeContentCheckbox').addEventListener('change', function () {
+                const additionalContent = document.querySelectorAll('.report-card .additional-content');
+                additionalContent.forEach(content => {
+                content.style.visibility = removeContentCheckbox.checked ? 'visible' : 'hidden';
+                });
+            });
+            document.getElementById('removeBorderCheckbox').addEventListener('change', function () {
+                const thElements = document.querySelectorAll('.first-sem-attendance th');
+                const tdElements = document.querySelectorAll('.first-sem-attendance td');
+                tdElements.forEach(td => {
+                    td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
+                    td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
+                });
+                
+                thElements.forEach(th => {
+                    th.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
+                    th.style.background = removeBorderCheckbox.checked ? 'none' : '#EEECE1';
+                });
+            });
             
             document.getElementById('showFirstSem').addEventListener('change', function () {
                 const firstsemElements = document.querySelectorAll('.firstsem-info');
@@ -62,311 +81,295 @@
                     schoolTextElements[i].style.visibility = this.checked ? 'visible' : 'hidden';
                 }
             });
-            function toggleContent() {
-                const removeContentCheckbox = document.getElementById('removeContentCheckbox');
-                const removeBorderCheckbox = document.getElementById('removeBorderCheckbox');
-                const additionalContent = document.querySelectorAll('.report-card .additional-content');
-                const attendanceTables = document.querySelectorAll('.first-sem-attendance td, th');
-
-                additionalContent.forEach(content => {
-                content.style.visibility = removeContentCheckbox.checked ? 'visible' : 'hidden';
-                });
-
-                attendanceTables.forEach(table => {
-                    table.style.border = removeBorderCheckbox.checked ? 'hidden' : '1px solid black';
-                    table.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
-                });
-            }
-
+            
             document.getElementById('removeContentCheckbox').addEventListener('change', toggleContent);
             document.getElementById('removeBorderCheckbox').addEventListener('change', toggleContent);
             document.getElementById('pageSelection').value = 'front';
             document.getElementById('pageSelection').dispatchEvent(new Event('change'));
-            toggleContent();
+            
 
         </script>
     </header>
 {% for student in students %}
-
 <div class="report-card">
     <div class="front-page">
-    <div class="card left">
-        <!-- FIRST
-        SEM
-            ATTENDANCE -->
-        <div class="attendance">
-        <br>
-        <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>REPORT ON ATTENDANCE</b></p>
-        <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>First Semester</b></p>
-        <div class="first-sem-attendance mt-2">
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        {% for month in student.school_months.school_months %}
-                            <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
-                        {% endfor %}
-                        <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="additional-content"><p class="arial-narrow font-8"  style="margin:0;padding:0;">No. of <br>school<br>days<br><br></p></span></td>
-                        {% for month in student.school_months.school_months %}
-                            <td style="text-align:center;"><span class="firstsem-info">{{ month.school_days }}</span></td>
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="firstsem-info">{{ student.school_months.total_school_days }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
-                        {% for month in student.school_months.school_months %}
-                            {% for entry in student.attendance_data %}
-                                {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_present }}</span></td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_present }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
-                        {% for month in student.school_months.school_months %}
-                            {% for entry in student.attendance_data %}
-                                {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_absent }}</span></td>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_absent }}</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        </div>
-        <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
-        <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
-            <tr>
-                <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
-            </tr>
-            <tr>
-                <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
-            </tr>
-        </table>
-          
-        
-        <br><br>
-        <!--
-            SECOND
+        <div class="card left">
+            <!-- FIRST
             SEM
-            ATTENDANCE
-        -->
-        <div class="attendance">
-        <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>Second Semester</b></p>
-        <div class="first-sem-attendance mt-2">
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        {% for month in student.school_months.school_months %}
-                            <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
-                        {% endfor %}
-                        <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="arial-narrow font-8" style="margin-top:0;"><span class="additional-content">No. of <br>school<br>days<br><br></span></td>
-                        {% for month in student.school_months.school_months %}
-                            <td style="text-align:center;"><span class="secondsem-info">{{ month.school_days }}</span></td>
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="secondsem-info">{{ student.school_months.total_school_days }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
-                        {% for month in student.school_months.school_months %}
-                            {% for entry in student.attendance_data %}
-                                {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_present }}</span></td>
-                                {% endif %}
+                ATTENDANCE -->
+            <div class="attendance">
+            <br>
+            <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>REPORT ON ATTENDANCE</b></p>
+            <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>First Semester</b></p>
+            <div class="first-sem-attendance mt-2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for month in student.school_months.school_months %}
+                                <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
                             {% endfor %}
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_present }}</span></td>
-                    </tr>
-                    <tr>
-                        <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
-                        {% for month in student.school_months.school_months %}
-                            {% for entry in student.attendance_data %}
-                                {% if month.month_name == entry.month__month_name %}
-                                    <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_absent }}</span></td>
-                                {% endif %}
+                            <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="additional-content"><p class="arial-narrow font-8"  style="margin:0;padding:0;">No. of <br>school<br>days<br><br></p></span></td>
+                            {% for month in student.school_months.school_months %}
+                                <td style="text-align:center;"><span class="firstsem-info">{{ month.school_days }}</span></td>
                             {% endfor %}
-                        {% endfor %}
-                        <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_absent }}</span></td>
-                    </tr>
-                </tbody>
+                            <td style="text-align:center;"><span class="firstsem-info">{{ student.school_months.total_school_days }}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
+                            {% for month in student.school_months.school_months %}
+                                {% for entry in student.attendance_data %}
+                                    {% if month.month_name == entry.month__month_name %}
+                                        <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_present }}</span></td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_present }}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
+                            {% for month in student.school_months.school_months %}
+                                {% for entry in student.attendance_data %}
+                                    {% if month.month_name == entry.month__month_name %}
+                                        <td style="text-align:center;"><span class="firstsem-info">{{ entry.days_absent }}</span></td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <td style="text-align:center;"><span class="firstsem-info">{{ student.total_days_absent }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            </div>
+            <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
+            <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
+                <tr>
+                    <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
+                </tr>
+                <tr>
+                    <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
+                </tr>
             </table>
-        </div>
-        </div>
-        <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
-        <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
-            <tr>
-                <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
-            </tr>
-            <tr>
-                <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
-            </tr>
-        </table>
-          
-        
-    </div>
-    <div class="card right additional-content">
-        <p class="sf-9-shs-text arial-narrow">SF-9-SHS</p>
-        <br>
-        <header class="school-info">
-            <div class="school-logo">
-                <br><br>
-                <img src="../../../media/deped.png" alt="School Logo" style="width:80px;height:80px;margin:auto;">
-            </div>
-            <div class="school-text">
-                <p class="arial-narrow font-9">Republic of the Philippines</p>
-                <p class="arial-narrow font-9">Department of Education</p>
-                <p class="arial-narrow font-9">Region X</p>
-                <p class="arial-narrow font-9"><b>CAGAYAN DE ORO CITY</b></p>
-                <p class="arial-narrow font-9"><b><i>Division</i></b></p>
-                <p class="arial-narrow font-9"><b>SOUTHWEST-I</b></p>
-                <p class="arial-narrow font-9"><i>District</i></p>
-                <p class="arial-narrow font-9"><b>LUMBIA NATIONAL HIGH SCHOOL</b></p>
-                <p class="arial-narrow font-9"><b><i>SENIOR HIGH SCHOOL</i></b></p>
-                <p class="arial-narrow font-9">School ID: <b><i>304119</i></b></p>
-            </div>
-            <div class="deped-logo">
                 
-                <img src="../../../media/deped_logo.png" alt="DepEd Logo" style="margin:auto;">
+            
+            <br><br>
+            <!--
+                SECOND
+                SEM
+                ATTENDANCE
+            -->
+            <div class="attendance">
+            <p class="arial-narrow font-9 additional-content" style="margin:0;"><b>Second Semester</b></p>
+            <div class="first-sem-attendance mt-2">
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for month in student.school_months.school_months %}
+                                <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
+                            {% endfor %}
+                            <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="arial-narrow font-8" style="margin-top:0;"><span class="additional-content">No. of <br>school<br>days<br><br></span></td>
+                            {% for month in student.school_months.school_months %}
+                                <td style="text-align:center;"><span class="secondsem-info">{{ month.school_days }}</span></td>
+                            {% endfor %}
+                            <td style="text-align:center;"><span class="secondsem-info">{{ student.school_months.total_school_days }}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
+                            {% for month in student.school_months.school_months %}
+                                {% for entry in student.attendance_data %}
+                                    {% if month.month_name == entry.month__month_name %}
+                                        <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_present }}</span></td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_present }}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
+                            {% for month in student.school_months.school_months %}
+                                {% for entry in student.attendance_data %}
+                                    {% if month.month_name == entry.month__month_name %}
+                                        <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_absent }}</span></td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <td style="text-align:center;"><span class="secondsem-info">{{ student.total_days_absent }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </header>
-        <div class="student-info">
-            <table class="font-9 arial-narrow">
-                <thead>
+            </div>
+            <p class="arial-narrow font-9 additional-content" style="margin:0;margin-top:6px;"><b>PARENT/GUARDIAN SIGNATURE:</b></p>
+            <table class="arial-narrow font-9 additional-content" style="width:50%;margin:auto;padding:0;">
+                <tr>
+                    <td style="width:10%;font-weight:800;">Midterm</td><td style="border-bottom:1px solid black;width:70%;"></td>
+                </tr>
+                <tr>
+                    <td style="width:10%;font-weight:800;">Finals</td><td style="border-bottom:1px solid black;width:70%;"></td>
+                </tr>
+            </table>
+                
+            
+        </div>
+        <div class="card right additional-content">
+            <p class="sf-9-shs-text arial-narrow">SF-9-SHS</p>
+            <br>
+            <header class="school-info">
+                <div class="school-logo">
+                    <br><br>
+                    <img src="../../../media/deped.png" alt="School Logo" style="width:80px;height:80px;margin:auto;">
+                </div>
+                <div class="school-text">
+                    <p class="arial-narrow font-9">Republic of the Philippines</p>
+                    <p class="arial-narrow font-9">Department of Education</p>
+                    <p class="arial-narrow font-9">Region X</p>
+                    <p class="arial-narrow font-9"><b>CAGAYAN DE ORO CITY</b></p>
+                    <p class="arial-narrow font-9"><b><i>Division</i></b></p>
+                    <p class="arial-narrow font-9"><b>SOUTHWEST-I</b></p>
+                    <p class="arial-narrow font-9"><i>District</i></p>
+                    <p class="arial-narrow font-9"><b>LUMBIA NATIONAL HIGH SCHOOL</b></p>
+                    <p class="arial-narrow font-9"><b><i>SENIOR HIGH SCHOOL</i></b></p>
+                    <p class="arial-narrow font-9">School ID: <b><i>304119</i></b></p>
+                </div>
+                <div class="deped-logo">
                     
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="width:10%;">Name:</td>
-                        <td style="border-bottom: 1px solid black;"><b>{{ student.student.complete_name }}</b></td>
-                        <td style="width: 8%;">LRN:</td>
-                        <td style="border-bottom: 1px solid black;"><b>{{ student.student.lrn }}</b></td>
-                    </tr>
-                    <tr>
-                        <td>Age:</td>
-                        <td style="border-bottom: 1px solid black;"><span class="secondsem-info">18</span></td>
-                        <td>Sex:</td>
-                        <td style="border-bottom: 1px solid black;"><b>{{ student.student.get_gender_display }}</b></td>
-                    </tr>
-                    <tr>
-                        <td>Grade:</td>
-                        <td style="border-bottom: 1px solid black;">12</td>
-                        <td>Section:</td>
-                        <td style="border-bottom: 1px solid black;"><b>{{ advisory.section }}</b></td>
-                    </tr>
-                    <tr>
-                        <td>School Year:</td>
-                        <td style="border-bottom: 1px solid black;">{{ advisory.get_school_year_display }}</td>
-                        <td>Semester:</td>
-                        <td style="border-bottom: 1px solid black;"><b></b></td>
-                    </tr>
-                    <tr>
-                        <td>Track/Strand:</td>
-                        <td colspan="3" style="border-bottom: 1px solid black;">{{ advisory.strand }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="parents arial font-9 mt-3">
-            <p>Dear Parents:</p>
-            <p style="text-indent:50px;">This report card shows the ability and progress your child has made in the different learning areas as well as his/her core values.</p>
-            <p style="text-indent:50px;">The school welcomes you, should you desire to know more about your child’s progress.</p>
-        </div>
-        <div class="principal-adviser mt-30">
-            <table class="font-9 arial-narrow">
-                <tbody>
-                    <tr><td style="width:50%;">Principal Name</td><td style="width:50%;">Adviser Name</td></tr>
-                    <tr><td style="width:50%;">Secondary School Principal</td>
-                        <td>Class Adviser</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <br>
-        <div class="certificate-transfer">
-            <p class="century font-9" style="text-align: center;">Certificate of Transfer</p>
-            <table class="arial font-9">
-                <tr>
-                    <td style="width:30%;">Admitted to Grade:</td>
-                    <td style="width:30%;border-bottom:1px solid black;">&nbsp;</td>
-                    <td style="width:10%;">Section:</td>
-                    <td style="width:40%;border-bottom:1px solid black;">&nbsp;</td>
-                </tr>
-            </table>
-            <table class="arial font-9">
-                <tr>
-                    <td style="width:40%;">Eligibility for Admission:</td>
-                    <td style="width:60%;border-bottom:1px solid black;">&nbsp;</td> 
-                </tr>
-            </table>
+                    <img src="../../../media/deped_logo.png" alt="DepEd Logo" style="margin:auto;">
+                </div>
+            </header>
+            <div class="student-info">
+                <table class="font-9 arial-narrow">
+                    <thead>
+                        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="width:10%;">Name:</td>
+                            <td style="border-bottom: 1px solid black;"><b>{{ student.student.complete_name }}</b></td>
+                            <td style="width: 8%;">LRN:</td>
+                            <td style="border-bottom: 1px solid black;"><b>{{ student.student.lrn }}</b></td>
+                        </tr>
+                        <tr>
+                            <td>Age:</td>
+                            <td style="border-bottom: 1px solid black;"><span class="secondsem-info">18</span></td>
+                            <td>Sex:</td>
+                            <td style="border-bottom: 1px solid black;"><b>{{ student.student.get_gender_display }}</b></td>
+                        </tr>
+                        <tr>
+                            <td>Grade:</td>
+                            <td style="border-bottom: 1px solid black;">12</td>
+                            <td>Section:</td>
+                            <td style="border-bottom: 1px solid black;"><b>{{ advisory.section }}</b></td>
+                        </tr>
+                        <tr>
+                            <td>School Year:</td>
+                            <td style="border-bottom: 1px solid black;">{{ advisory.get_school_year_display }}</td>
+                            <td>Semester:</td>
+                            <td style="border-bottom: 1px solid black;"><b></b></td>
+                        </tr>
+                        <tr>
+                            <td>Track/Strand:</td>
+                            <td colspan="3" style="border-bottom: 1px solid black;">{{ advisory.strand }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="parents arial font-9 mt-3">
+                <p>Dear Parents:</p>
+                <p style="text-indent:50px;">This report card shows the ability and progress your child has made in the different learning areas as well as his/her core values.</p>
+                <p style="text-indent:50px;">The school welcomes you, should you desire to know more about your child’s progress.</p>
+            </div>
+            <div class="principal-adviser mt-30">
+                <table class="font-9 arial-narrow">
+                    <tbody>
+                        <tr><td style="width:50%;">Principal Name</td><td style="width:50%;">Adviser Name</td></tr>
+                        <tr><td style="width:50%;">Secondary School Principal</td>
+                            <td>Class Adviser</td></tr>
+                    </tbody>
+                </table>
+            </div>
             <br>
-            <p class="arial font-9" style="text-indent:30px;">Approved:</p>
+            <div class="certificate-transfer">
+                <p class="century font-9" style="text-align: center;">Certificate of Transfer</p>
+                <table class="arial font-9">
+                    <tr>
+                        <td style="width:30%;">Admitted to Grade:</td>
+                        <td style="width:30%;border-bottom:1px solid black;">&nbsp;</td>
+                        <td style="width:10%;">Section:</td>
+                        <td style="width:40%;border-bottom:1px solid black;">&nbsp;</td>
+                    </tr>
+                </table>
+                <table class="arial font-9">
+                    <tr>
+                        <td style="width:40%;">Eligibility for Admission:</td>
+                        <td style="width:60%;border-bottom:1px solid black;">&nbsp;</td> 
+                    </tr>
+                </table>
+                <br>
+                <p class="arial font-9" style="text-indent:30px;">Approved:</p>
+            </div>
+            <div class="principal-adviser mt-30">
+                <table class="font-9 arial-narrow">
+                    <tbody>
+                        <tr><td style="width:50%;">Principal Name</td><td style="width:50%;">Adviser Name</td></tr>
+                        <tr><td style="width:50%;">Secondary School Principal</td>
+                            <td>Class Adviser</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="certificate-transfer mt-2">
+                <p class="century font-9" style="text-align: center;">Cancellation of Eligibility to Transfer</p>
+                <table class="arial font-9">
+                    <tr>
+                        <td style="width:20%;">Admitted in:</td>
+                        <td style="width:75%;border-bottom:1px solid black;">&nbsp;</td>
+                    </tr>
+                </table>
+                <table class="arial font-9">
+                    <tr>
+                        <td style="width:5%;">Date:</td>
+                        <td style="width:95%;border-bottom:1px solid black;">&nbsp;</td> 
+                    </tr>
+                </table>
+                <br>
+            </div>
         </div>
-        <div class="principal-adviser mt-30">
-            <table class="font-9 arial-narrow">
-                <tbody>
-                    <tr><td style="width:50%;">Principal Name</td><td style="width:50%;">Adviser Name</td></tr>
-                    <tr><td style="width:50%;">Secondary School Principal</td>
-                        <td>Class Adviser</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="certificate-transfer mt-2">
-            <p class="century font-9" style="text-align: center;">Cancellation of Eligibility to Transfer</p>
-            <table class="arial font-9">
-                <tr>
-                    <td style="width:20%;">Admitted in:</td>
-                    <td style="width:75%;border-bottom:1px solid black;">&nbsp;</td>
-                </tr>
-            </table>
-            <table class="arial font-9">
-                <tr>
-                    <td style="width:5%;">Date:</td>
-                    <td style="width:95%;border-bottom:1px solid black;">&nbsp;</td> 
-                </tr>
-            </table>
-            <br>
-        </div>
-    </div>
     </div>
     <div class="back-page">
-        <div class="card-right">
-
-        </div>
-        <div class="card-left">
+        <div class="card left">
             <p class="calibri font-9" style="margin:0;padding:0;"><b>REPORT ON LEARNING PROGRESS AND ACHIEVEMENT</b></p>
             <div class="firstsem-grade">
                 <p class="calibri font-9" style="margin:0;padding:0;"><b>First Semester</b></p>
-                    <table>
-                        <thead class="calibri font-8">
-                            <tr>
-                                <th rowspan="2">Subjects</th>
-                                <th>Mid</th>
-                                <th>Final</th>
-                                <th>Semester</th>
-                                <th rowspan="2">Remarks</th>
-                            </tr>
-                            <tr>
-                                <th>1</th>
-                                <th>2</th>
-                                <th>Final Grade</th>
-                            </tr>
-                        </thead>
-                    </table>
+                <table>
+                    <thead class="calibri font-8">
+                        <tr>
+                            <th rowspan="2">Subjects</th>
+                            <th>Mid</th>
+                            <th>Final</th>
+                            <th>Semester</th>
+                            <th rowspan="2">Remarks</th>
+                        </tr>
+                        <tr>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>Final Grade</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
+        </div>
+        <div class="card right">
+            <h2>Right</h2>
         </div>
     </div>
 </div>

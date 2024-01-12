@@ -153,14 +153,13 @@ body {
 .firstsem-grade table {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 100%;
+    width: 50%;
     height: 100%;
     margin:auto;
     
 }
 .firstsem-grade td, th {
-    width: 12.5%; 
-    height: 25%; 
+    width: 10.5%;
     border: 1px solid black;
 }
 /** MARGIN-TOP **/
