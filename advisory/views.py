@@ -79,6 +79,7 @@ def report_cards_page(request, advisory_id):
     student_data = []
     present_data = []
     days_absent = []
+    
     total_days_present = 0
     total_days_absent = 0
     for student in students:
@@ -87,15 +88,16 @@ def report_cards_page(request, advisory_id):
         total_days_absent = student_attendance.aggregate(total_days_absent=Sum('days_absent'))['total_days_absent'] or 0
         monthly_attendance_data = student_attendance.values('student__complete_name', 'month__month_name', 'days_present', 'days_absent')
         grades = Grade.objects.filter(advisory__id=advisory_id, student__complete_name=student)
-        student_grades_first_quarter = get_grades(advisory_id, student, '1','1')
-        print(student_grades_first_quarter)
+        student_grades_firstQ = get_grades_1st(advisory_id, student)
+        student_grades_secondQ = get_grades_2nd(advisory_id, student, '1','2')
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
             'total_days_present': total_days_present,
             'total_days_absent': total_days_absent,
             'school_months':school_month,
-            '1st_grade':student_grades_first_quarter
+            '1st_grade': student_grades_firstQ,
+            '2nd_grade': student_grades_secondQ
             
         }
         student_data.append(student_info)
@@ -103,13 +105,25 @@ def report_cards_page(request, advisory_id):
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)
 
-def get_grades(advisory,student,semester,quarter):
+def get_grades_1st(advisory,student):
+    first_and_second_quarters_grades = Grade.objects.filter(student=student, advisory=advisory, quarter__in=['1', '2'])
+    grades = []
+    for grade in first_and_second_quarters_grades:
+        subject_name = grade.subject.name
+        grade_value = grade.value
+        subject_value = {'subject': grade.subject.name,'grade':grade.value,'category':grade.subject.category}
+        grades.append(subject_value)
+    return grades
+def get_grades_2nd(advisory,student,semester,quarter):
     grades = Grade.objects.filter(
             advisory__id=advisory,
             student__complete_name=student,
-            semester__name=semester,  
-            quarter__name=quarter   
-            ).order_by('subject__category', 'subject__order')
+            semester__name=semester,
+            quarter__name=quarter
+            ).order_by('subject__order')
+    grades_ = []
     for grade in grades:
         grade_subj = {'subject':grade.subject, 'grade':grade.value, 'category':grade.subject.category}
-        return grade_subj
+        grades_.append(grade_subj)
+        
+    return grades_

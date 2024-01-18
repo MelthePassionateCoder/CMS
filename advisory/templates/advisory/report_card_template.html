@@ -69,7 +69,7 @@
                 
                 frontPageElements.forEach(content => {
                     content.style.display = pageSelection === 'front' ? 'block' : 'none';
-                });
+                }); 
 
                 backPageElements.forEach(content => {
                     content.style.display = pageSelection === 'back' ? 'block' : 'none';
@@ -365,6 +365,74 @@
                             <th>Final Grade</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
+                        </tr>
+                        {% for subj in student.1st_grade %}
+                        {% for subj_ in student.2nd_grade %}
+                        {% if subj.category == 'core' and subj_.category == 'core' %}
+                        {% if subj.subject == subj_.subject %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade_ }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">&nbsp;</span></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
+                        </tr>
+                        {% for subj in student.1st_grade %}
+                        {% for subj_ in student.2nd_grade %}
+                        {% if subj.category == 'applied' and subj_.category == 'applied' %}
+                        {% if subj.subject == subj_.subject %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade_ }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">&nbsp;</span></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
+                        </tr>
+                        {% for subj in student.1st_grade %}
+                        {% for subj_ in student.2nd_grade %}
+                        {% if subj.category == 'specialized' and subj_.category == 'specialized' %}
+                        {% if subj.subject == subj_.subject %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade_ }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td style="text-align:left;width:45%;"><span class="arial-narrow font-8">{{ subj.subject }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">{{ subj.grade }}</span></td>
+                            <td style="text-align:center;width:13%;"><span class="firstsem-info arial-narrow font-8">&nbsp;</span></td>
+                        </tr>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </div>
