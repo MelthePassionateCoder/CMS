@@ -88,16 +88,47 @@ def report_cards_page(request, advisory_id):
         total_days_absent = student_attendance.aggregate(total_days_absent=Sum('days_absent'))['total_days_absent'] or 0
         monthly_attendance_data = student_attendance.values('student__complete_name', 'month__month_name', 'days_present', 'days_absent')
         grades = Grade.objects.filter(advisory__id=advisory_id, student__complete_name=student)
-        student_grades_firstQ = get_grades_1st(advisory_id, student)
-        student_grades_secondQ = get_grades_2nd(advisory_id, student, '1','2')
+        first_semester_data = Grade.objects.filter(student=student, advisory=advisory, semester__name='1').order_by('subject__order')
+        first_semester_q1_q2_data = first_semester_data.filter(quarter__name__in=['1', '2'])
+        
+        second_semester_data = Grade.objects.filter(student=student, advisory=advisory,semester__name='2').order_by('subject__order')
+        second_semester_q3_q4_data = second_semester_data.filter(quarter__name__in=['3', '4'])
+        
+        grouped_first_semester_data = {}
+        for grade in first_semester_q1_q2_data:
+            subject_name = grade.subject.name
+            if subject_name not in grouped_first_semester_data:
+                grouped_first_semester_data[subject_name] = {'q1': None, 'q2': None,'semester_final': None, 'remarks': None, 'cat': grade.subject.category}
+            if grade.quarter.name == '1':
+                grouped_first_semester_data[subject_name]['q1'] = round(grade.value)
+            elif grade.quarter.name == '2':
+                grouped_first_semester_data[subject_name]['q2'] = round(grade.value)
+        
+        grouped_second_semester_data = {}
+        for grade in second_semester_q3_q4_data:
+            subject_name = grade.subject.name
+            if subject_name not in grouped_second_semester_data:
+                grouped_second_semester_data[subject_name] = {'q3': None, 'q4': None, 'semester_final': None, 'remarks': None,'cat':grade.subject.category}
+            if grade.quarter.name == '3':
+                grouped_second_semester_data[subject_name]['q3'] = grade.value
+            elif grade.quarter.name == '4':
+                grouped_second_semester_data[subject_name]['q4'] = grade.value
+        
+        for grades in grouped_first_semester_data.values():
+            grades['semester_final'] = calculate_semester_final_grade([grades['q1'], grades['q2']])
+            grades['remarks'] = determine_remarks(grades['semester_final'])
+        
+        for grades in grouped_second_semester_data.values():
+            grades['semester_final'] = calculate_semester_final_grade([grades['q3'], grades['q4']])
+            grades['remarks'] = determine_remarks(grades['semester_final'])
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
             'total_days_present': total_days_present,
             'total_days_absent': total_days_absent,
             'school_months':school_month,
-            '1st_grade': student_grades_firstQ,
-            '2nd_grade': student_grades_secondQ
+            'grouped_first_semester_data': grouped_first_semester_data,
+            'grouped_second_semester_data': grouped_second_semester_data,
             
         }
         student_data.append(student_info)
@@ -105,25 +136,16 @@ def report_cards_page(request, advisory_id):
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)
 
-def get_grades_1st(advisory,student):
-    first_and_second_quarters_grades = Grade.objects.filter(student=student, advisory=advisory, quarter__in=['1', '2'])
-    grades = []
-    for grade in first_and_second_quarters_grades:
-        subject_name = grade.subject.name
-        grade_value = grade.value
-        subject_value = {'subject': grade.subject.name,'grade':grade.value,'category':grade.subject.category}
-        grades.append(subject_value)
-    return grades
-def get_grades_2nd(advisory,student,semester,quarter):
-    grades = Grade.objects.filter(
-            advisory__id=advisory,
-            student__complete_name=student,
-            semester__name=semester,
-            quarter__name=quarter
-            ).order_by('subject__order')
-    grades_ = []
+
+def calculate_semester_final_grade(grades):
+    total = 0
+    count = 0
     for grade in grades:
-        grade_subj = {'subject':grade.subject, 'grade':grade.value, 'category':grade.subject.category}
-        grades_.append(grade_subj)
-        
-    return grades_
+        if grade:
+            total += grade
+            count += 1
+    average = total / count if count > 0 else None
+    return round(average) if average is not None else None
+
+def determine_remarks(semester_final_grade):
+    return 'Passed' if semester_final_grade is not None and semester_final_grade >= 75 else 'Failed'
