@@ -23,6 +23,8 @@
         </select>
         <input type="checkbox" id="showFirstSem"> Show First Sem Info
         <input type="checkbox" id="showSecondSem"> Show Second Sem Info
+        <input type="checkbox" id="showFirstQ"> Show First Quarter
+        <input type="checkbox" id="showSecondQ"> Show Second Quarter
         <input type="checkbox" id="removeContentCheckbox"> Show Additional Content
         <input type="checkbox" id="removeBorderCheckbox"> Remove Table Border
         <button onclick="printReportCard()">Print Report Card</button>
@@ -39,15 +41,20 @@
             document.getElementById('removeBorderCheckbox').addEventListener('change', function () {
                 const thElements = document.querySelectorAll('.first-sem-attendance th');
                 const tdElements = document.querySelectorAll('.first-sem-attendance td');
+                const tdElements_ = document.querySelectorAll('.firstsem-grade td, .firstsem-grade th');
                 tdElements.forEach(td => {
                     td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
                     td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
                 });
-                
+                tdElements_.forEach(td => {
+                    td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
+                    td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
+                });
                 thElements.forEach(th => {
                     th.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
                     th.style.background = removeBorderCheckbox.checked ? 'none' : '#EEECE1';
                 });
+                
             });
             
             document.getElementById('showFirstSem').addEventListener('change', function () {
@@ -62,6 +69,19 @@
                 content.style.visibility = showSecondSem.checked ? 'visible' : 'hidden';
                 });
             });
+            document.getElementById('showFirstQ').addEventListener('change', function () {
+                const firstsemElements = document.querySelectorAll('.firstQ-info');
+                firstsemElements.forEach(content => {
+                content.style.visibility = showFirstQ.checked ? 'visible' : 'hidden';
+                });
+            });
+            document.getElementById('showSecondQ').addEventListener('change', function () {
+                const secondsemElements = document.querySelectorAll('.secondQ-info');
+                secondsemElements.forEach(content => {
+                content.style.visibility = showSecondQ.checked ? 'visible' : 'hidden';
+                });
+            });
+            
             document.getElementById('pageSelection').addEventListener('change', function () {
                 const pageSelection = this.value;
                 const frontPageElements = document.querySelectorAll('.front-page');
@@ -348,10 +368,125 @@
     </div>
     <div class="back-page">
         <div class="card left">
-            <p class="calibri font-9" style="margin:0;padding:0;"><b>REPORT ON LEARNING PROGRESS AND ACHIEVEMENT</b></p>
+            <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>REPORT ON LEARNING PROGRESS AND ACHIEVEMENT</b></p>
+            <!-- FIRST SEM GRADE -->
             <div class="firstsem-grade">
-                <p class="calibri font-9" style="margin:0;padding:0;"><b>First Semester</b></p>
-                <table style="width:95%;float:left;">
+                <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>First Semester</b></p>
+                <table style="width:100%;float:left;height:50%;">
+                    <thead class="calibri font-8 additional-content">
+                        <tr>
+                            <th rowspan="2">Subjects</th>
+                            <th>Mid</th>
+                            <th>Final</th>
+                            <th>Semester</th>
+                            <th rowspan="2">REMARKS</th>
+                        </tr>
+                        <tr>
+                            <th>1</th>
+                            <th>2</th>
+                            <th>Final<br> Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody class="additional-content">
+                        <tr>
+                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
+                        </tr>
+                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% if grades.cat == 'core' %}
+                        <tr>
+                            <td style="text-align:left;width:40%;"><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8">{{ grades.q1 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.q2 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
+                        </tr>
+                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% if grades.cat == 'applied' %}
+                        <tr>
+                            <td><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8">{{ grades.q1 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.q2 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            {% endif %}
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
+                        </tr>
+                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% if grades.cat == 'specialized' %}
+                        <tr>
+                            <td><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8">{{ grades.q1 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.q2 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondQ-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="firstQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondQ-info arial-narrow font-8"></span></td>
+                            {% endif %}
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:right;background-color: #D9D9D9;" colspan="3"><span class="calibri font-8"><b>GENERAL AVERAGE FOR THE SEMESTER</b></span></td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- second SEM GRADE -->
+            <div class="firstsem-grade">
+                <p class="calibri font-9" style="margin:0;padding:0;"><b>Second Semester</b></p>
+                <table style="width:100%;float:left;height:50%;">
                     <thead class="calibri font-8">
                         <tr>
                             <th rowspan="2">Subjects</th>
@@ -367,46 +502,67 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="type-of-subject">
+                        <tr class="core-row">
                             <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
                         </tr>
-                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'core' %}
                         <tr>
-                            <td style="text-align:left;width:40%;"><span class="arial-narrow font-8">{{ subject }}</span></td>
-                            <td style="text-align:center;width:12.5%;"><span class="firstsem-info arial-narrow font-8">{{ grades.q1 }}</span></td>
-                            <td style="text-align:center;width:12.5%;"><span class="firstsem-info arial-narrow font-8">{{ grades.q2 }}</span></td>
-                            <td style="text-align:center;width:14.5%;"><span class="firstsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
-                            <td style="text-align:center;width:15.5%;"><span class="firstsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            <td style="text-align:left;width:50%;"><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            {% endif %}
+                            
                         </tr>
                         {% endif %}
                         {% endfor %}
-                        <tr>
-                            <td colspan="5"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
+                        <tr class="core-row">
+                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
                         </tr>
-                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'applied' %}
                         <tr>
                             <td><span class="arial-narrow font-8">{{ subject }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.q1 }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.q2 }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            {% endif %}
                         </tr>
                         {% endif %}
                         {% endfor %}
-                        <tr>
+                        <tr class="core-row">
                             <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
                         </tr>
-                        {% for subject, grades in student.grouped_first_semester_data.items %}
+                        {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'specialized' %}
                         <tr>
                             <td><span class="arial-narrow font-8">{{ subject }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.q1 }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.q2 }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
-                            <td style="text-align:center;"><span class="firstsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
-                        </tr>
+                            {% if grades.q3 != 0.00 %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.semester_final }}</span></td>
+                            <td style="text-align:center;width:15.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.remarks }}</span></td>
+                            {% else %}
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            <td style="text-align:center;width:14.5%;"><span class="secondsem-info arial-narrow font-8"></span></td>
+                            {% endif %}
                         <tr>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
@@ -418,13 +574,6 @@
                         {% endfor %}
                         <tr>
                             <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
-                        </tr>
-                        <tr>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
-                            <td>&nbsp;</td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>

@@ -13,7 +13,7 @@
     .first-sem-attendance th {
         background-color: #EEECE1;
     }
-    .type-of-subject {
-        background-color: #D9D9D9;
+    .firstsem-grade .type-of-subject {
+        background-color: #D9D9D9 !important;
     }
     }
