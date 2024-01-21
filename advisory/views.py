@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import CreateView,ListView, DetailView, FormView, UpdateView, DeleteView
 from .models import Advisory
 from attendance.models import DailyAttendance, SchoolMonth, MonthlyAttendanceManual
-from grades.models import Subject, Grade
+from grades.models import Subject, Grade, ObservedValue
 from .forms import AdvisoryForm, AddStudentForm
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
@@ -121,6 +121,28 @@ def report_cards_page(request, advisory_id):
         for grades in grouped_second_semester_data.values():
             grades['semester_final'] = calculate_semester_final_grade([grades['q3'], grades['q4']])
             grades['remarks'] = determine_remarks(grades['semester_final'])
+
+        observed_values = ObservedValue.objects.filter(advisory=advisory, student=student).order_by('behavior_statement__order')
+        
+        grouped_data_observed_values = {}
+        for value in observed_values:
+            core_value = value.core_value
+            behavior_statement = value.behavior_statement
+            quarter = value.quarter
+            grade = value.grade
+
+            key = (core_value, behavior_statement)
+            if key not in grouped_data_observed_values:
+                grouped_data_observed_values[key] = {'quarter_1': None, 'quarter_2': None, 'quarter_3': None, 'quarter_4': None}
+            if quarter == '1':
+                grouped_data_observed_values[key]['quarter_1'] = grade
+            elif quarter == '2':
+                grouped_data_observed_values[key]['quarter_2'] = grade
+            elif quarter == '3':
+                grouped_data_observed_values[key]['quarter_3'] = grade
+            elif quarter == '4':
+                grouped_data_observed_values[key]['quarter_4'] = grade
+        
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
@@ -129,9 +151,11 @@ def report_cards_page(request, advisory_id):
             'school_months':school_month,
             'grouped_first_semester_data': grouped_first_semester_data,
             'grouped_second_semester_data': grouped_second_semester_data,
+            'grouped_data_observed_values': grouped_data_observed_values
             
         }
         student_data.append(student_info)
+        print(f"\n\n\n{grouped_data_observed_values}\n\n\n")
     return render(request, 'advisory/report_card_template.html', {'advisory': advisory, 'students':student_data})
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)

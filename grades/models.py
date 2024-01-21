@@ -57,6 +57,7 @@ class CoreValue(models.Model):
 class BehaviorStatement(models.Model):
     core_value = models.ForeignKey(CoreValue, on_delete=models.CASCADE)
     statement = models.CharField(max_length=255)
+    order = models.IntegerField(default=1)
 
     def __str__(self):
         return f"{self.core_value.name} - {self.statement}"
@@ -67,7 +68,7 @@ class ObservedValue(models.Model):
     core_value = models.ForeignKey(CoreValue, on_delete=models.CASCADE)
     behavior_statement = models.ForeignKey(BehaviorStatement, on_delete=models.CASCADE)
     quarter = models.ForeignKey(Quarter, on_delete=models.CASCADE, default="1")
-    grade = models.CharField(max_length=1, choices=[('A', 'A'), ('B', 'B'), ('C', 'C')])
+    grade = models.CharField(max_length=3, choices=[('AO', 'AO'), ('SO', 'SO'), ('RO', 'RO'),('NO', 'NO')])
 
     def __str__(self):
         return f"{self.student.complete_name} - {self.core_value.name} - {self.behavior_statement.statement} - Quarter {self.quarter}"

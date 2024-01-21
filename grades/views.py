@@ -1,7 +1,7 @@
 import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Grade, Subject, Semester, ObservedValue, CoreValue, BehaviorStatement
+from .models import Grade, Subject, Semester, ObservedValue, CoreValue, BehaviorStatement, Quarter
 from .forms import GradeImportForm, ObservedValueImportForm
 from advisory.models import Advisory
 
@@ -57,10 +57,13 @@ def input_observed_values(request, advisory_id):
 
     if request.method == 'POST':
         if 'manual_input' in request.POST:
-            form = ObservedValueForm(request.POST)
+            form = ObservedValueImportForm(request.POST)
             if form.is_valid():
                 observed_value = form.save(commit=False)
                 observed_value.student = advisory.students.filter(lrn=form.cleaned_data['lrn']).first()
+                core_value_name = form.cleaned_data['core_value']
+                core_value, _ = CoreValue.objects.get_or_create(name=core_value_name)
+                observed_value.core_value = core_value
                 observed_value.advisory = advisory
                 observed_value.save()
         elif 'excel_input' in request.POST:
@@ -72,9 +75,14 @@ def input_observed_values(request, advisory_id):
                     lrn = row['LRN']
                     complete_name = row['Name']
                     student = advisory.students.filter(lrn=lrn).first()
-                    core_value = row['Core Value']
-                    behavior_statement = row['Behavior Statement']
-                    quarter = row['Quarter']
+                    core_value_name = row['Core Value']
+                    core_value, _ = CoreValue.objects.get_or_create(name=core_value_name)
+                    behavior_statement_name = row['Behavior Statement']
+                    behavior_statement, _ = BehaviorStatement.objects.get_or_create(
+                                                                        core_value=core_value,
+                                                                        statement=behavior_statement_name)
+                    quarter_name = row['Quarter']
+                    quarter, _ =Quarter.objects.get_or_create(name=quarter_name)
                     grade = row['Grade']
                     observed_value = ObservedValue.objects.create(
                         student=student,

@@ -6,8 +6,8 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" name="manual_input">Save Observed Value</button>
-    <button type="submit" name="excel_input">Import from Excel</button>
+    <button type="submit" name="manual_input">Manual Input</button>
+    <button type="submit" name="excel_input">Excel File</button>
 </form>
 
 <h2>Existing Observed Values</h2>
