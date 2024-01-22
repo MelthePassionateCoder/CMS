@@ -595,7 +595,7 @@
             <div class="core-values">
                 <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>REPORT ON LEARNER’S OBSERVED VALUES</b></p>
                 
-                <table>
+                <table border="1">
                     <thead>
                         <tr>
                             <th>Core Value</th>
@@ -607,20 +607,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for core_value, behavior_statements in student.grouped_data_observed_values.items %}
-                        {% for behavior_statement, grades in behavior_statements.items %}
-                            <tr>
-                                {% if forloop.first %}
-                                    <td rowspan="{{ behavior_statements|length }}">{{ core_value.name }}</td>
-                                {% endif %}
-                                <td>{{ behavior_statement.statement }}</td>
-                                <td>{{ grades.quarter_1 }}</td>
-                                <td>{{ grades.quarter_2 }}</td>
-                                <td>{{ grades.quarter_3 }}</td>
-                                <td>{{ grades.quarter_4 }}</td>
-                            </tr>
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                            
+                                <tr>
+                                    
+                                    {% if behavior_statement.core_value == 'Maka-Diyos' %}
+                                        {{ student_info.maka_diyos_count }}
+                                    {% endif %}
+                                        <td rowspan="{% if behavior_statement.core_value == 'Maka-Diyos' %}{{ student.maka_diyos_count }}{% endif %}">
+                                            {{ behavior_statement.core_value }}
+                                        </td>
+                                    <td>{{ behavior_statement.statement }}</td>
+                                    <td>{{ behavior_statement_grades.quarter_1 }}</td>
+                                    <td>{{ behavior_statement_grades.quarter_2 }}</td>
+                                    <td>{{ behavior_statement_grades.quarter_3 }}</td>
+                                    <td>{{ behavior_statement_grades.quarter_4 }}</td>
+                                </tr>  
                         {% endfor %}
-                    {% endfor %}
                     </tbody>
                 </table>
             </div>

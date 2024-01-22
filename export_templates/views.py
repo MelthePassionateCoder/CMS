@@ -72,17 +72,17 @@ def generate_excel_template(request, advisory_id):
 
     data = []
     for student in students:
-        for core_value in core_values:
-            for behavior_statement in behavior_statements:
-                row_data = {
-                    'LRN': student.lrn,
-                    'Name': student.complete_name,
-                    'Core Value': core_value.name,
-                    'Behavior Statement': behavior_statement.statement,
-                    'Quarter': 1, 
-                    'Grade': '',
-                }
-                data.append(row_data)
+        for behavior_statement in behavior_statements:
+            print(student,behavior_statement)
+            row_data = {
+                'LRN': student.lrn,
+                'Name': student.complete_name,
+                'Core Value': behavior_statement.core_value,
+                'Behavior Statement': behavior_statement.statement,
+                'Quarter': 1, 
+                'Grade': '',
+            }
+            data.append(row_data)
 
     df = pd.DataFrame(data)
 

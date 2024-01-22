@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.views.generic import CreateView,ListView, DetailView, FormView, UpdateView, DeleteView
 from .models import Advisory
 from attendance.models import DailyAttendance, SchoolMonth, MonthlyAttendanceManual
-from grades.models import Subject, Grade, ObservedValue
+from grades.models import Subject, Grade, ObservedValue, CoreValue
 from .forms import AdvisoryForm, AddStudentForm
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
@@ -12,6 +12,7 @@ from xhtml2pdf import pisa
 from django.views import View
 from django.db.models import Count, Sum, Case, When, DecimalField
 from django.db.models.functions import TruncMonth
+from collections import defaultdict
 # Create your views here.
 class AdvisoryCreateView(CreateView):
     model = Advisory
@@ -124,6 +125,12 @@ def report_cards_page(request, advisory_id):
 
         observed_values = ObservedValue.objects.filter(advisory=advisory, student=student).order_by('behavior_statement__order')
         
+        maka_diyos_count = defaultdict(int)
+        makatao_count = defaultdict(int)
+        makakalikasan_count = defaultdict(int)
+        makabansa_count = defaultdict(int)
+
+
         grouped_data_observed_values = {}
         for value in observed_values:
             core_value = value.core_value
@@ -131,7 +138,7 @@ def report_cards_page(request, advisory_id):
             quarter = value.quarter
             grade = value.grade
 
-            key = (core_value, behavior_statement)
+            key = behavior_statement
             if key not in grouped_data_observed_values:
                 grouped_data_observed_values[key] = {'quarter_1': None, 'quarter_2': None, 'quarter_3': None, 'quarter_4': None}
             if quarter == '1':
@@ -142,7 +149,16 @@ def report_cards_page(request, advisory_id):
                 grouped_data_observed_values[key]['quarter_3'] = grade
             elif quarter == '4':
                 grouped_data_observed_values[key]['quarter_4'] = grade
-        
+
+            if core_value.name == "Maka-Diyos":
+                maka_diyos_count[core_value] += 1
+            elif core_value.name == "Makatao":
+                makatao_count[core_value] += 1
+            elif core_value.name == "Maka-kalikasan":
+                makakalikasan_count[core_value] += 1
+            elif core_value.name == "Maka-bansa":
+                makabansa_count[core_value] += 1
+            
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
@@ -151,11 +167,15 @@ def report_cards_page(request, advisory_id):
             'school_months':school_month,
             'grouped_first_semester_data': grouped_first_semester_data,
             'grouped_second_semester_data': grouped_second_semester_data,
-            'grouped_data_observed_values': grouped_data_observed_values
+            'grouped_data_observed_values': grouped_data_observed_values,
+            'maka_diyos_count': maka_diyos_count,
+            'makatao_count': makatao_count,
+            'makakalikasan_count': makakalikasan_count,
+            'makabansa_count': makabansa_count,
             
         }
         student_data.append(student_info)
-        print(f"\n\n\n{grouped_data_observed_values}\n\n\n")
+        print(f"\n\n\n{makatao_count}\n\n\n")
     return render(request, 'advisory/report_card_template.html', {'advisory': advisory, 'students':student_data})
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)
