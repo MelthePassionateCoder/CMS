@@ -17,7 +17,7 @@ class Student(models.Model):
     date_of_birth = models.DateField()
     birth_cert = models.BooleanField(default=False, verbose_name='Birth Certificate')
     attendance = models.IntegerField(default=0, verbose_name='Daily Attendance')
-    
+
     def save(self, *args, **kwargs):
         self.complete_name = f"{self.firstname} {self.middlename} {self.lastname}".strip()
 
