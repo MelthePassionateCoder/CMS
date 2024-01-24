@@ -84,13 +84,24 @@ def input_observed_values(request, advisory_id):
                     quarter_name = row['Quarter']
                     quarter, _ =Quarter.objects.get_or_create(name=quarter_name)
                     grade = row['Grade']
-                    observed_value = ObservedValue.objects.create(
+                    existing_observed_value = ObservedValue.objects.filter(
                         student=student,
                         advisory=advisory,
                         core_value=core_value,
                         behavior_statement=behavior_statement,
-                        quarter=quarter,
-                        grade=grade
+                        quarter=quarter
+                    ).first()
+                    if existing_observed_value:
+                        existing_observed_value.grade = row['Grade']
+                        existing_observed_value.save()
+                    else:
+                        observed_value = ObservedValue.objects.create(
+                            student=student,
+                            advisory=advisory,
+                            core_value=core_value,
+                            behavior_statement=behavior_statement,
+                            quarter=quarter,
+                            grade=grade
                     )
                 return redirect('success_page') 
         else:

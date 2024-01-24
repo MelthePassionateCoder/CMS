@@ -25,6 +25,8 @@
         <input type="checkbox" id="showSecondSem"> Show Second Sem Info
         <input type="checkbox" id="showFirstQ"> Show First Quarter
         <input type="checkbox" id="showSecondQ"> Show Second Quarter
+        <input type="checkbox" id="showThirdQ"> Show Third Quarter
+        <input type="checkbox" id="showFourthQ"> Show Fourth Quarter
         <input type="checkbox" id="removeContentCheckbox"> Show Additional Content
         <input type="checkbox" id="removeBorderCheckbox"> Remove Table Border
         <button onclick="printReportCard()">Print Report Card</button>
@@ -42,11 +44,16 @@
                 const thElements = document.querySelectorAll('.first-sem-attendance th');
                 const tdElements = document.querySelectorAll('.first-sem-attendance td');
                 const tdElements_ = document.querySelectorAll('.firstsem-grade td, .firstsem-grade th');
+                const tdElements__ = document.querySelectorAll('.core-values td, .core-values th');
                 tdElements.forEach(td => {
                     td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
                     td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
                 });
                 tdElements_.forEach(td => {
+                    td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
+                    td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
+                });
+                tdElements__.forEach(td => {
                     td.style.border = removeBorderCheckbox.checked ? '1px solid white' : '1px solid black';
                     td.style.background = removeBorderCheckbox.checked ? 'none' : 'none';
                 });
@@ -81,7 +88,18 @@
                 content.style.visibility = showSecondQ.checked ? 'visible' : 'hidden';
                 });
             });
-            
+            document.getElementById('showThirdQ').addEventListener('change', function () {
+                const firstsemElements = document.querySelectorAll('.thirdQ-info');
+                firstsemElements.forEach(content => {
+                content.style.visibility = showThirdQ.checked ? 'visible' : 'hidden';
+                });
+            });
+            document.getElementById('showFourthQ').addEventListener('change', function () {
+                const secondsemElements = document.querySelectorAll('.fourthQ-info');
+                secondsemElements.forEach(content => {
+                content.style.visibility = showFourthQ.checked ? 'visible' : 'hidden';
+                });
+            });
             document.getElementById('pageSelection').addEventListener('change', function () {
                 const pageSelection = this.value;
                 const frontPageElements = document.querySelectorAll('.front-page');
@@ -371,9 +389,9 @@
             <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>REPORT ON LEARNING PROGRESS AND ACHIEVEMENT</b></p>
             <!-- FIRST SEM GRADE -->
             <div class="firstsem-grade">
-                <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>First Semester</b></p>
-                <table style="width:100%;float:left;height:50%;">
-                    <thead class="calibri font-8 additional-content">
+                <p class="calibri font-8 additional-content" style="margin:0;padding:0;"><b>First Semester</b></p>
+                <table>
+                    <thead class="calibri font-9 additional-content">
                         <tr>
                             <th rowspan="2">Subjects</th>
                             <th>Mid</th>
@@ -387,9 +405,9 @@
                             <th>Final<br> Grade</th>
                         </tr>
                     </thead>
-                    <tbody class="additional-content">
+                    <tbody class="calibri font-8 additional-content">
                         <tr>
-                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
+                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
                         </tr>
                         {% for subject, grades in student.grouped_first_semester_data.items %}
                         {% if grades.cat == 'core' %}
@@ -431,7 +449,7 @@
                         {% endif %}
                         {% endfor %}
                         <tr>
-                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
+                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
                         </tr>
                         {% for subject, grades in student.grouped_first_semester_data.items %}
                         {% if grades.cat == 'specialized' %}
@@ -459,7 +477,7 @@
                         {% endif %}
                         {% endfor %}
                         <tr>
-                            <td colspan="5" style="background-color: #D9D9D9;" class="type-of-subject"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
+                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -485,9 +503,9 @@
             </div>
             <!-- second SEM GRADE -->
             <div class="firstsem-grade">
-                <p class="calibri font-9" style="margin:0;padding:0;"><b>Second Semester</b></p>
-                <table style="width:100%;float:left;height:50%;">
-                    <thead class="calibri font-8">
+                <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>Second Semester</b></p>
+                <table>
+                    <thead class="calibri font-8 additional-content">
                         <tr>
                             <th rowspan="2">Subjects</th>
                             <th>Mid</th>
@@ -501,14 +519,14 @@
                             <th>Final<br> Grade</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="core-row">
-                            <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
+                    <tbody class="calibri font-8">
+                        <tr>
+                            <td colspan="5" class="type-of-subject additional-content"><span class="arial-narrow font-8"><b>Core Subjects</b></span></td>
                         </tr>
                         {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'core' %}
                         <tr>
-                            <td style="text-align:left;width:50%;"><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            <td style="text-align:left;width:50%;"><span class="arial-narrow font-8 additional-content">{{ subject }}</span></td>
                             {% if grades.q3 != 0.00 %}
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
@@ -524,13 +542,13 @@
                         </tr>
                         {% endif %}
                         {% endfor %}
-                        <tr class="core-row">
-                            <td colspan="5" class="type-of-subject"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
+                        <tr>
+                            <td colspan="5" class="type-of-subject additional-content"><span class="arial-narrow font-8"><b>Applied Subjects</b></span></td>
                         </tr>
                         {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'applied' %}
                         <tr>
-                            <td><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            <td><span class="arial-narrow font-8 additional-content">{{ subject }}</span></td>
                             {% if grades.q3 != 0.00 %}
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
@@ -545,13 +563,13 @@
                         </tr>
                         {% endif %}
                         {% endfor %}
-                        <tr class="core-row">
-                            <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
+                        <tr>
+                            <td colspan="5" class="type-of-subject additional-content"><span class="arial-narrow font-8"><b>Specialized Subjects</b></span></td>
                         </tr>
                         {% for subject, grades in student.grouped_second_semester_data.items %}
                         {% if grades.cat == 'specialized' %}
                         <tr>
-                            <td><span class="arial-narrow font-8">{{ subject }}</span></td>
+                            <td><span class="arial-narrow font-8 additional-content">{{ subject }}</span></td>
                             {% if grades.q3 != 0.00 %}
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q3 }}</span></td>
                             <td style="text-align:center;width:12.5%;"><span class="secondsem-info arial-narrow font-8">{{ grades.q4 }}</span></td>
@@ -570,10 +588,17 @@
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                         </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
                         {% endif %}
                         {% endfor %}
                         <tr>
-                            <td colspan="5" style="background-color: #D9D9D9;"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
+                            <td colspan="5" class="type-of-subject additional-content"><span class="arial-narrow font-8"><b>Other Subject/s</b></span></td>
                         </tr>
                         <tr>
                             <td>&nbsp;</td>
@@ -583,7 +608,7 @@
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td style="text-align:right;background-color: #D9D9D9;" colspan="3"><span class="calibri font-8"><b>GENERAL AVERAGE FOR THE SEMESTER</b></span></td>
+                            <td style="text-align:right;" colspan="3" class="type-of-subject  additional-content"><span class="calibri font-8"><b>GENERAL AVERAGE FOR THE SEMESTER</b></span></td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                         </tr>
@@ -592,39 +617,182 @@
             </div>
         </div>
         <div class="card right">
+            <!--
+                CORE
+                VALUES
+                GRADE
+            -->
             <div class="core-values">
                 <p class="calibri font-9 additional-content" style="margin:0;padding:0;"><b>REPORT ON LEARNER’S OBSERVED VALUES</b></p>
-                
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>Core Value</th>
-                            <th>Behavior Statement</th>
-                            <th>Quarter 1 Grade</th>
-                            <th>Quarter 2 Grade</th>
-                            <th>Quarter 3 Grade</th>
-                            <th>Quarter 4 Grade</th>
+                <table class="core-values-table" style="padding:0;margin:0;">
+                    <thead class="calibri font-8 additional-content"> 
+                        <tr class="type-of-subject">
+                            <th rowspan="2" style="width:75px;">CORE VALUES</th>
+                            <th rowspan="2" style="width:150px;">BEHAVIOR STATEMENT</th>
+                            <th colspan="2">First<br>Semester</th>
+                            <th colspan="2">Second<br>Semester</th>
+                        </tr>
+                        <tr class="type-of-subject">
+                            <th>Mid</th>
+                            <th>Final</th>
+                            <th>Mid</th>
+                            <th>Final</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="calibri font-8 additional-content" style="padding:0;margin:0;">
+                        <!-- MAKADIYOS -->
                         {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
-                            
+                                {% if behavior_statement.statement == "Expresses one’s spiritual beliefs while respecting the spiritual beliefs of others." %}
                                 <tr>
-                                    
-                                    {% if behavior_statement.core_value == 'Maka-Diyos' %}
-                                        {{ student_info.maka_diyos_count }}
-                                    {% endif %}
-                                        <td rowspan="{% if behavior_statement.core_value == 'Maka-Diyos' %}{{ student.maka_diyos_count }}{% endif %}">
-                                            {{ behavior_statement.core_value }}
-                                        </td>
-                                    <td>{{ behavior_statement.statement }}</td>
-                                    <td>{{ behavior_statement_grades.quarter_1 }}</td>
-                                    <td>{{ behavior_statement_grades.quarter_2 }}</td>
-                                    <td>{{ behavior_statement_grades.quarter_3 }}</td>
-                                    <td>{{ behavior_statement_grades.quarter_4 }}</td>
-                                </tr>  
+                                    <td rowspan="{{ student.maka_diyos_count }}"><span class="  additional-content">1.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</span></td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</span></td>
+                                </tr> 
+                                {% endif %}
+                                
                         {% endfor %}
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Shows adherence to ethical principles by upholding truth." %}
+                                <tr>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
+                                    <td><span class=" firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
+                                    <td><span class=" secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
+                                    <td><span class=" thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</span></td>
+                                    <td><span class=" fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</span></td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        <!-- MAKATAO -->
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Is sensitive to individual, social, and cultural differences." %}
+                                <tr>
+                                    <td rowspan="{{ student.makatao_count }}"><span class="additional-content">2.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</span></td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</span></td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Demonstrates contribution toward solidarity." %}
+                                <tr>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        <!-- MAKAKALIKASAN -->
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Cares for the environment and utilizes resources wisely, judiciously and economically." %}
+                                <tr>
+                                    <td rowspan="{{ student.makakalikasan_count }}"><span class="additional-content">3.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        <!-- MAKABANSA -->
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Demonstrate pride in being a Filipino, exercises the rights and responsibilities of a Filipino citizen." %}
+                                <tr>
+                                    <td rowspan="{{ student.makabansa_count }}"><span class="additional-content">4.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
+                                {% if behavior_statement.statement == "Demonstrates appropriate behavior in carrying out activities in the school, community, and country." %}
+                                <tr>
+                                    <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
+                                    <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
+                                    <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
+                                    <td><span class="thirdQ-info">{{ behavior_statement_grades.quarter_3 }}</span></td>
+                                    <td><span class="fourthQ-info">{{ behavior_statement_grades.quarter_4 }}</span></td>
+                                </tr> 
+                                {% endif %}
+                                
+                        {% endfor %}
+                        
                     </tbody>
+                </table>
+            </div>
+            <div class="core-values-desc additional-content">
+                <p class="calibri font-8 p-no-padding-margin bold-txt">OBSERVED VALUES</p>
+                <table class="calibri font-8">
+                    <tr>
+                        <th>Marking</th>
+                        <th>Non-numerical Rating</th>
+                    </tr>
+                    <tr>
+                        <td>AO</td>
+                        <td>Always Observed</td>
+                    </tr>
+                    <tr>
+                        <td>SO</td>
+                        <td>Sometimes Observed</td>
+                    </tr>
+                    <tr>
+                        <td>RO</td>
+                        <td>Rarely Observed</td>
+                    </tr>
+                    <tr>
+                        <td>NO</td>
+                        <td>Not Observed</td>
+                    </tr>
+                </table>
+                <br>
+                <p class="calibri font-8 p-no-padding-margin bold-txt">LEARNERS PROGRESS AND ACHIEVEMENT</p>
+                <table class="calibri font-8">
+                    <tr>
+                        <th>Descriptors</th>
+                        <th>Grading Scale</th>
+                        <th>Remarks</th>
+                    </tr>
+                    <tr>
+                        <td>Outstanding</td>
+                        <td>90-100</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Very Satisfactory</td>
+                        <td>85-89</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Satisfactory</td>
+                        <td>80-84</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Fairly Satisfactory</td>
+                        <td>75-79</td>
+                        <td>Passed</td>
+                    </tr>
+                    <tr>
+                        <td>Did not meet Expectations</td>
+                        <td>Below 75</td>
+                        <td>Failed</td>
+                    </tr>
                 </table>
             </div>
         </div>

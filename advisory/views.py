@@ -125,19 +125,20 @@ def report_cards_page(request, advisory_id):
 
         observed_values = ObservedValue.objects.filter(advisory=advisory, student=student).order_by('behavior_statement__order')
         
-        maka_diyos_count = defaultdict(int)
-        makatao_count = defaultdict(int)
-        makakalikasan_count = defaultdict(int)
-        makabansa_count = defaultdict(int)
+        maka_diyos_count = 0
+        makatao_count = 0
+        makakalikasan_count = 0
+        makabansa_count = 0
 
 
         grouped_data_observed_values = {}
         for value in observed_values:
             core_value = value.core_value
             behavior_statement = value.behavior_statement
-            quarter = value.quarter
+            quarter = value.quarter.name
             grade = value.grade
-
+            
+            
             key = behavior_statement
             if key not in grouped_data_observed_values:
                 grouped_data_observed_values[key] = {'quarter_1': None, 'quarter_2': None, 'quarter_3': None, 'quarter_4': None}
@@ -151,14 +152,13 @@ def report_cards_page(request, advisory_id):
                 grouped_data_observed_values[key]['quarter_4'] = grade
 
             if core_value.name == "Maka-Diyos":
-                maka_diyos_count[core_value] += 1
+                maka_diyos_count += 1
             elif core_value.name == "Makatao":
-                makatao_count[core_value] += 1
+                makatao_count += 1
             elif core_value.name == "Maka-kalikasan":
-                makakalikasan_count[core_value] += 1
+                makakalikasan_count += 1
             elif core_value.name == "Maka-bansa":
-                makabansa_count[core_value] += 1
-            
+                makabansa_count += 1
         student_info = {
             'student': student,
             'attendance_data': monthly_attendance_data,
@@ -175,7 +175,7 @@ def report_cards_page(request, advisory_id):
             
         }
         student_data.append(student_info)
-        print(f"\n\n\n{makatao_count}\n\n\n")
+        # print(f"\n\n\n{makatao_count}\n\n\n")
     return render(request, 'advisory/report_card_template.html', {'advisory': advisory, 'students':student_data})
     # context = {'advisory': advisory, 'students': students, 'attendance_counts':attendance_counts}
     # return render(request, 'advisory/report_card_template.html', context)
