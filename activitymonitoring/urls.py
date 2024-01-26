@@ -1,8 +1,6 @@
 from django.urls import path
-from .views import input_grades, input_observed_values
+from .views import add_activity
 
 urlpatterns = [
-    path('<int:advisory_id>/input-grades/', input_grades, name='grade_input'),
-    path('<int:advisory_id>/input-observed-values/', input_observed_values, name='input_observed_values'),
-    
+    path('add_activity/<int:subject_id>/', add_activity , name='add_activity'),
 ]

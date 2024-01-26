@@ -1,0 +1,28 @@
+{% extends "student/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Add Activity for {{ subject.name }}</h2>
+    <form method="post" action="{% url 'add_activity' subject_id=subject.id %}">
+        {% csrf_token %}
+        <label for="activity_name">Activity Name:</label>
+        <input type="text" id="activity_name" name="activity_name" required>
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="written_work">Written Work</option>
+            <option value="performance_task">Performance Task</option>
+            <option value="quarter_exam">Quarter Exam</option>
+        </select>
+
+        <label for="total_score">Total Score:</label>
+        <input type="number" id="total_score" name="total_score" required>
+
+        
+        {% for student in students %}
+            <label for="score_{{ student.id }}">{{ student.first_name }} {{ student.last_name }} Score:</label>
+            <input type="number" id="score_{{ student.id }}" name="score_{{ student.id }}" required>
+        {% endfor %}
+
+        
+        <button type="submit">Calculate and Save</button>
+    </form>
+{% endblock %}
