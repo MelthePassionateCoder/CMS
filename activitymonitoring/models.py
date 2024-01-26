@@ -5,9 +5,9 @@ from grades.models import Subject
 # Create your models here.
 class Activity(models.Model):
     CATEGORY_CHOICES = [
-        ('written_work', 'Written Work'),
-        ('performance_task', 'Performance Task'),
-        ('quarter_exam', 'Quarter Exam'),
+        ('WW', 'Written Work'),
+        ('PT', 'Performance Task'),
+        ('QE', 'Quarter Exam'),
     ]
 
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -17,7 +17,15 @@ class Activity(models.Model):
     deadline = models.DateField()
     created = models.DateTimeField(default=timezone.now)
 
-class Score(models.Model):
+class Student_activity(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subjects = models.ManyToManyField(Subject, through='SubjectEnrollment')
+
+class SubjectEnrollment(models.Model):
+    student = models.ForeignKey(Student_activity, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+
+class Score(models.Model):
+    student = models.ForeignKey(Student_activity, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     score = models.FloatField()
