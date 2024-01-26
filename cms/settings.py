@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'attendance.apps.AttendanceConfig',
     'grades.apps.GradesConfig',
     'export_templates.apps.ExportTemplatesConfig',
+    'activitymonitoring.apps.ActivitymonitoringConfig',
     'crispy_forms',
     'crispy_bootstrap4',
     'bootstrap_datepicker_plus',
