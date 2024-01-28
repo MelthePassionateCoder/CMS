@@ -1,22 +1,46 @@
-from django.shortcuts import render
-from .models import Activity, Student_activity, SubjectEnrollment, Score
+from django.shortcuts import render, redirect,get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, ListView, DetailView, FormView
+from .models import Section
+from .forms import SectionForm, AddStudentForm
+# Create your views here.
 
-def add_activity(request, subject_id):
-    subject = Subject.objects.get(pk=subject_id)
-    students = subject.student_set.all()
-    activities = Activity.objects.filter(subject=subject)
+class SectionListView(ListView):
+    model = Section
+    template_name = 'activitymonitoring/section_list.html' 
+    context_object_name = 'sections'
 
-    if request.method == 'POST':
-        activity_name = request.POST['activity_name']
-        category = request.POST['category']
-        total_score = float(request.POST['total_score'])
+    def get_queryset(self):
+        return Section.objects.all()
 
-        activity = Activity.objects.create(subject=subject, name=activity_name, category=category, totalScore=total_score)
+class SectionCreateView(CreateView):
+    form_class = SectionForm
+    template_name = 'activitymonitoring/section_create.html' 
+    success_url = reverse_lazy('section-list') 
 
-        for student in students:
-            score_value = float(request.POST.get(f'score_{student.id}', 0))
-            Score.objects.create(student=student, activity=activity, score=score_value)
+    def form_valid(self, form):
+        form.instance.subject_teacher = self.request.user
+        return super().form_valid(form)
 
-        return redirect('grades_view', subject_id=subject_id)
+class SectionDetailView(DetailView):
+	model = Section
+	template_name = 'activitymonitoring/section_detail.html'
+	context_object_name = 'sections'
 
-    return render(request, 'activitymoitoring/add_activity.html', {'subject': subject, 'students': students, 'activities': activities})
+class AddStudentsToSectionView(FormView):
+    template_name = 'activitymonitoring/add_students.html'
+    form_class = AddStudentForm
+
+    def get_success_url(self):
+        return reverse('section-detail', kwargs={'pk': self.kwargs['section_id']})
+
+    def form_valid(self, form):
+        section = get_object_or_404(Section, pk=self.kwargs['section_id'])
+        students = form.cleaned_data['students']
+        section.students.add(*students)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section'] = get_object_or_404(Section, pk=self.kwargs['section_id'])
+        return context

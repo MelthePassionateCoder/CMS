@@ -1,0 +1,26 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+  <h2>Advisory List</h2>
+  <a href="{% url 'subject-create' %}" class="btn btn-primary">Add New Subject</a>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for subject in subjects %}
+        <tr>
+          <td>{{ subject.name }}</td>
+          <td>{{ subject.category }}</td>
+          <td>
+            <a href="" class="btn btn-info">View Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

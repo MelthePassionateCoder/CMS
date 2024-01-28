@@ -1,0 +1,29 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+  <h2>Advisory List</h2>
+  <a href="{% url 'section-create' %}" class="btn btn-primary">Add New Section</a>
+  <table class="table table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>School Year</th>
+        <th>Section</th>
+        <th>Strand</th>
+        <!-- <th>Students</th> -->
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for section in sections %}
+        <tr>
+          <td>SY{{ section.get_school_year_display }}</td>
+          <td>{{ section.section }}</td>
+          <td>{{ section.subject }}</td>
+          <td>
+            <a href="{% url 'section-detail' section.id %}" class="btn btn-info">View Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

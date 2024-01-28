@@ -2,8 +2,10 @@ import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import Grade, Subject, Semester, ObservedValue, CoreValue, BehaviorStatement, Quarter
-from .forms import GradeImportForm, ObservedValueImportForm
+from .forms import GradeImportForm, ObservedValueImportForm, SubjectCreateForm
 from advisory.models import Advisory
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView
 
 def input_grades(request, advisory_id):
     advisory = Advisory.objects.get(pk=advisory_id)
@@ -113,3 +115,15 @@ def input_observed_values(request, advisory_id):
 
     return render(request, 'grades/input_observed_values.html', {'form': form, 'advisory': advisory, 'observed_values': observed_values})
 
+class SubjectList(ListView):
+    model = Subject
+    template_name = 'grades/subject_list.html' 
+    context_object_name = 'subjects'
+
+    def get_queryset(self):
+        return Subject.objects.all()
+
+class SubjectCreate(CreateView):
+    form_class = SubjectCreateForm
+    template_name = 'grades/subject_create.html' 
+    success_url = reverse_lazy('subject-list') 

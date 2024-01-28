@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Activity, Student_activity, SubjectEnrollment, Score
-# Register your models here.
+from .models import Section, Activity, Score
+
+admin.site.register(Section)
 admin.site.register(Activity)
-admin.site.register(Student_activity)
-admin.site.register(SubjectEnrollment)
 admin.site.register(Score)
