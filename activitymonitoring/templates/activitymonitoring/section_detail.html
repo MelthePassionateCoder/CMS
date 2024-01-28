@@ -2,7 +2,8 @@
 {% block content %}
 <h2>{{ sections.school_year }} - {{ sections.section }}</h2>
   <a href="{% url 'add-students-section' section_id=sections.id %}" class="btn btn-primary">Add More Students</a>
-  
+  <a href="{% url 'activity-list' section_id=sections.id %}" class="btn btn-primary">List of Activity</a>
+  <a href="{% url 'compute_grade' section_id=sections.id %}" class="btn btn-primary">View Grade</a>
   <div class="card mb-4 mt-3">
     <div class="card-header">
       <h2>Subject: {{ sections.subject }}</h2>

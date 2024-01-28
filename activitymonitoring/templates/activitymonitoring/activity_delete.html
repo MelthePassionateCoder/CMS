@@ -1,0 +1,14 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+<h2>Delete Activity - {{ activity.name }}</h2>
+  <p>Are you sure you want to delete this activity?</p>
+  
+  <form method="post" action="">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+  </form>
+
+  <a href="{% url 'activity-list' section_id=activity.section.id %}">Cancel</a>
+
+{% endblock %}

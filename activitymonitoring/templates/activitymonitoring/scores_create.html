@@ -1,0 +1,12 @@
+{% extends 'student/base.html' %} 
+{% block content %}
+<h2>Enter Scores for {{ activity }} in {{ section }}</h2>
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    {% for form in formset %}
+      {{ form.as_table }}
+    {% endfor %}
+    <button type="submit">Save Scores</button>
+  </form>
+{% endblock %}

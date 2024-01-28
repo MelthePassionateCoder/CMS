@@ -1,0 +1,14 @@
+{% extends 'student/base.html' %} 
+{% load crispy_forms_tags %}
+{% block content %}
+<h2>Create Activity for {{ section }}</h2>
+  <form method="post" action="">
+    <fieldset>
+      {% csrf_token %}
+      {{ activity_form|crispy }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Create</button>
+    </div>
+  </form>
+{% endblock %}

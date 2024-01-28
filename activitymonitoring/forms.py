@@ -1,5 +1,6 @@
 from django import forms
-from .models import Section
+from django.forms import inlineformset_factory
+from .models import Section, Activity, Score
 
 class SectionForm(forms.ModelForm):
     class Meta:
@@ -17,3 +18,20 @@ class AddStudentForm(forms.ModelForm):
         widgets = {
             'students': forms.CheckboxSelectMultiple,
         }
+
+class ActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+        fields = ['name', 'activity_type', 'totalScore','deadline','description']
+
+class ScoreForm(forms.ModelForm):
+    class Meta:
+        model = Score
+        fields = ['section','student', 'score']
+
+class ScoreFormSet(inlineformset_factory(Activity, Score, form=ScoreForm, extra=1, exclude=['activity'])):
+    def __init__(self, *args, **kwargs):
+        students = kwargs.pop('students', None)
+        super(ScoreFormSet, self).__init__(*args, **kwargs)
+        if students:
+            self.forms[0].fields['student'].queryset = students

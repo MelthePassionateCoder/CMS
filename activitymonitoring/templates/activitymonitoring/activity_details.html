@@ -1,0 +1,35 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+<h2>Activity Details - {{ activity.name }}</h2>
+<div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>{{ activity.name }}</h2>
+        <p><strong>Activity Type:</strong> {{ activity.get_activity_type_display }}</p>
+        <p><strong>Description:</strong> {{ activity.description|linebreaksbr }}</p>
+        
+        <h3>Missed Students:</h3>
+        {% if missed_students %}
+          <ul>
+            {% for student in missed_students %}
+              <li>{{ student.complete_name }} ({{ student.lrn }})</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>All students participated in this activity.</p>
+        {% endif %}
+      </div>
+
+      <div class="col-md-4">
+        <!-- Add additional information or side content here if needed -->
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <a class="btn btn-primary" href="{% url 'activity-list' section_id=section.id %}">Back to Activity List</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

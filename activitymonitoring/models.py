@@ -69,12 +69,13 @@ class Activity(models.Model):
     totalScore = models.FloatField()
     deadline = models.DateField()
     created = models.DateTimeField(default=timezone.now)
-    description = models.CharField(max_length=200)
+    description = models.TextField(max_length=200,null=True)
     
     def __str__(self):
         return f"{self.name} - {self.get_activity_type_display()}"
 
 class Score(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     score = models.DecimalField(max_digits=5, decimal_places=2)

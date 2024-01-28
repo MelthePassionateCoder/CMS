@@ -1,0 +1,23 @@
+{% extends 'student/base.html' %}  
+
+{% block content %}
+<h2>Compute Grades for {{ subject.name }} - {{ section }}</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in grades %}
+        <tr>
+          <td>{{ entry.student.complete_name }}</td>
+          <td>{{ entry.grade }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'section-detail' pk=section.id %}">Back to Section Detail</a>
+
+{% endblock %}
