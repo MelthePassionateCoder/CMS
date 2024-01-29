@@ -644,7 +644,7 @@
                         {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
                                 {% if behavior_statement.statement == "Expresses one’s spiritual beliefs while respecting the spiritual beliefs of others." %}
                                 <tr>
-                                    <td rowspan="{{ student.maka_diyos_count }}"><span class="  additional-content">1.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td rowspan="2"><span class="  additional-content">1.<br>{{ behavior_statement.core_value }}</span></td>
                                     <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
                                     <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
                                     <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
@@ -670,7 +670,7 @@
                         {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
                                 {% if behavior_statement.statement == "Is sensitive to individual, social, and cultural differences." %}
                                 <tr>
-                                    <td rowspan="{{ student.makatao_count }}"><span class="additional-content">2.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td rowspan="2"><span class="additional-content">2.<br>{{ behavior_statement.core_value }}</span></td>
                                     <td ><span class="additional-content">{{ behavior_statement.statement }}</span></td>
                                     <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</span></td>
                                     <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</span></td>
@@ -696,7 +696,7 @@
                         {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
                                 {% if behavior_statement.statement == "Cares for the environment and utilizes resources wisely, judiciously and economically." %}
                                 <tr>
-                                    <td rowspan="{{ student.makakalikasan_count }}"><span class="additional-content">3.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td rowspan="1"><span class="additional-content">3.<br>{{ behavior_statement.core_value }}</span></td>
                                     <td ><span class="additional-content">{{ behavior_statement.statement }}</td>
                                     <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</td>
                                     <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</td>
@@ -710,7 +710,7 @@
                         {% for behavior_statement, behavior_statement_grades in student.grouped_data_observed_values.items %}
                                 {% if behavior_statement.statement == "Demonstrate pride in being a Filipino, exercises the rights and responsibilities of a Filipino citizen." %}
                                 <tr>
-                                    <td rowspan="{{ student.makabansa_count }}"><span class="additional-content">4.<br>{{ behavior_statement.core_value }}</span></td>
+                                    <td rowspan="2"><span class="additional-content">4.<br>{{ behavior_statement.core_value }}</span></td>
                                     <td ><span class="additional-content">{{ behavior_statement.statement }}</td>
                                     <td><span class="firstQ-info">{{ behavior_statement_grades.quarter_1 }}</td>
                                     <td><span class="secondQ-info">{{ behavior_statement_grades.quarter_2 }}</td>

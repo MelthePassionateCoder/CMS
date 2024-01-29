@@ -67,15 +67,16 @@ def enter_scores(request, section_id, activity_id):
     students = section.students.all()
 
     if request.method == 'POST':
-        formset = ScoreFormSet(request.POST, queryset=Score.objects.filter(activity=activity), students=students, section=section)
+        formset = ScoreFormSet(request.POST, queryset=Score.objects.filter(activity=activity),students=students)
+        print(f"\n\n\n{formset}\n\n")
         if formset.is_valid():
             for form in formset:
-                score = form.save(commit=False)
-                score.activity = activity
-                score.save()
+                form.instance.section = section
+                form.instance.activity = activity
+                form.save()
             return redirect('section-detail', pk=section_id)
     else:
-        formset = ScoreFormSet(queryset=Score.objects.filter(activity=activity), students=students, section=section)
+        formset = ScoreFormSet(queryset=Score.objects.filter(activity=activity),students=students)
 
     return render(request, 'activitymonitoring/scores_create.html', {'section': section, 'activity': activity, 'formset': formset})
 

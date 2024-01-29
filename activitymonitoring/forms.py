@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from .models import Section, Activity, Score
+from student.models import Student
 
 class SectionForm(forms.ModelForm):
     class Meta:
@@ -27,11 +28,20 @@ class ActivityForm(forms.ModelForm):
 class ScoreForm(forms.ModelForm):
     class Meta:
         model = Score
-        fields = ['section','student', 'score']
+        fields = ['section','student', 'score','activity']
+
+    def __init__(self, *args, **kwargs):
+        super(ScoreForm, self).__init__(*args, **kwargs)
 
 class ScoreFormSet(inlineformset_factory(Activity, Score, form=ScoreForm, extra=1, exclude=['activity'])):
     def __init__(self, *args, **kwargs):
-        students = kwargs.pop('students', None)
+        self.section = kwargs.pop('section', None)
+        self.students = kwargs.pop('students', None)
         super(ScoreFormSet, self).__init__(*args, **kwargs)
-        if students:
-            self.forms[0].fields['student'].queryset = students
+        if self.students:
+            self.forms[0].fields['student'].queryset = self.students
+    
+    def add_fields(self, form, index):
+        super(ScoreFormSet, self).add_fields(form, index)
+        form.fields['section'].widget = forms.HiddenInput()
+        form.fields['activity'].widget = forms.HiddenInput()

@@ -1,12 +1,16 @@
 {% extends 'student/base.html' %} 
+{% load crispy_forms_tags %}
 {% block content %}
 <h2>Enter Scores for {{ activity }} in {{ section }}</h2>
-  <form method="post" action="">
+<form method="post" action="{% url 'enter_scores' section_id=section.id activity_id=activity.id %}">
     {% csrf_token %}
     {{ formset.management_form }}
     {% for form in formset %}
-      {{ form.as_table }}
+      {{ form.student|as_crispy_field }}
+      {{ form.score|as_crispy_field }}
     {% endfor %}
-    <button type="submit">Save Scores</button>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Create</button>
+  </div>
   </form>
 {% endblock %}

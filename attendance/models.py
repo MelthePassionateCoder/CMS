@@ -18,7 +18,7 @@ class DailyAttendance(models.Model):
     afternoon_in_status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True)
     afternoon_out_status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True)
     file = models.FileField(upload_to='uploads/excel_files/', null=True, blank=True)
-    day_status = models.CharField(max_length=10, choices=STATUS_CHOICES, blank=True, null=True)
+    day_status = models.CharField(max_length=10, blank=True, null=True)
 
     def clean(self):
         status_choices = [choice[0] for choice in self.STATUS_CHOICES]
@@ -29,13 +29,23 @@ class DailyAttendance(models.Model):
                 raise ValidationError(f"Invalid status '{status}' for field '{field}'")
 
     def save(self, *args, **kwargs):
-        present_statuses = [
-            status for status in [self.morning_in_status, self.morning_out_status, self.afternoon_in_status, self.afternoon_out_status]
-            if status == 'Present'
-        ]
+        all_present = all(
+            field == 'Present' for field in [self.morning_in_status, self.morning_out_status, self.afternoon_in_status, self.afternoon_out_status]
+        )
 
-        if present_statuses:
+        morning_late = self.morning_in_status == 'Absent' and self.morning_out_status == 'Present'
+
+        cutting_class = (
+            self.morning_in_status == self.morning_out_status == 'Present'
+            and self.afternoon_in_status == self.afternoon_out_status == 'Absent'
+        )
+
+        if all_present:
             self.day_status = 'Present'
+        # elif morning_late:
+        #     self.day_status = 'Late'
+        # elif cutting_class:
+        #     self.day_status = 'Cutting class'
         else:
             self.day_status = 'Absent'
 
