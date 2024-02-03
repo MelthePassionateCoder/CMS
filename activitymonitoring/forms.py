@@ -25,23 +25,42 @@ class ActivityForm(forms.ModelForm):
         model = Activity
         fields = ['name', 'activity_type', 'totalScore','deadline','description']
 
+# class ScoreForm(forms.ModelForm):
+#     class Meta:
+#         model = Score
+#         fields = ['section','student', 'score','activity']
+
+#     def __init__(self, *args, **kwargs):
+#         super(ScoreForm, self).__init__(*args, **kwargs)
+
+# class ScoreFormSet(inlineformset_factory(Activity, Score, form=ScoreForm, extra=1, exclude=['activity'])):
+#     def __init__(self, *args, **kwargs):
+#         self.section = kwargs.pop('section', None)
+#         self.students = kwargs.pop('students', None)
+#         super(ScoreFormSet, self).__init__(*args, **kwargs)
+#         if self.students:
+#             self.forms[0].fields['student'].queryset = self.students
+    
+#     def add_fields(self, form, index):
+#         super(ScoreFormSet, self).add_fields(form, index)
+#         form.fields['section'].widget = forms.HiddenInput()
+#         form.fields['activity'].widget = forms.HiddenInput()
+
 class ScoreForm(forms.ModelForm):
     class Meta:
         model = Score
-        fields = ['section','student', 'score','activity']
+        fields = ['student', 'score']
 
     def __init__(self, *args, **kwargs):
         super(ScoreForm, self).__init__(*args, **kwargs)
 
-class ScoreFormSet(inlineformset_factory(Activity, Score, form=ScoreForm, extra=1, exclude=['activity'])):
+ScoreFormSet = inlineformset_factory(Activity, Score, form=ScoreForm, extra=1, exclude=['section', 'activity'])
+
+class BaseScoreFormSet(ScoreFormSet):
     def __init__(self, *args, **kwargs):
         self.section = kwargs.pop('section', None)
         self.students = kwargs.pop('students', None)
-        super(ScoreFormSet, self).__init__(*args, **kwargs)
+        super(BaseScoreFormSet, self).__init__(*args, **kwargs)
+
         if self.students:
             self.forms[0].fields['student'].queryset = self.students
-    
-    def add_fields(self, form, index):
-        super(ScoreFormSet, self).add_fields(form, index)
-        form.fields['section'].widget = forms.HiddenInput()
-        form.fields['activity'].widget = forms.HiddenInput()

@@ -1,23 +1,35 @@
 {% extends 'student/base.html' %}  
 
 {% block content %}
-<h2>Compute Grades for {{ subject.name }} - {{ section }}</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Student Name</th>
-        <th>Grade</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for entry in grades %}
-        <tr>
-          <td>{{ entry.student.complete_name }}</td>
-          <td>{{ entry.grade }}</td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <a href="{% url 'section-detail' pk=section.id %}">Back to Section Detail</a>
+<h1 class="mb-4">Compute Grade</h1>
+
+        <!-- Display Student Details in a Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Written Work (WW)</th>
+                    <th>Performance Task (PT)</th>
+                    <th>Quarterly Exam (QE)</th>
+                    <th>Initial Grade</th>
+                    <th>Final Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop through students and display their details -->
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.id }}</td>
+                        <td>{{ student.score_WW }}</td>
+                        <td>{{ student.score_PT }}</td>
+                        <td>{{ student.score_QE }}</td>
+                        <td>{{ student.initial_grade }}</td>
+                        <td>{{ student.final_grade }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+  <a href="">Back to Section Detail</a>
 
 {% endblock %}

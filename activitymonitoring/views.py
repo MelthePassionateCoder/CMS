@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, FormView
 from .models import Section, Activity, Score
-from .forms import SectionForm, AddStudentForm, ActivityForm, ScoreFormSet
+from .forms import SectionForm, AddStudentForm, ActivityForm, BaseScoreFormSet
+from decimal import Decimal
 # Create your views here.
 
 class SectionListView(ListView):
@@ -65,18 +66,28 @@ def enter_scores(request, section_id, activity_id):
     activity = Activity.objects.get(pk=activity_id)
 
     students = section.students.all()
-
+    ScoreFormSet = BaseScoreFormSet
     if request.method == 'POST':
-        formset = ScoreFormSet(request.POST, queryset=Score.objects.filter(activity=activity),students=students)
-        print(f"\n\n\n{formset}\n\n")
+        formset = ScoreFormSet(request.POST, queryset=Score.objects.filter(activity=activity, section=section),students=students)
+        
         if formset.is_valid():
-            for form in formset:
-                form.instance.section = section
-                form.instance.activity = activity
-                form.save()
+            instances = formset.save(commit=False)
+            for instance in instances:
+                student = instance.student
+                print(f"\n\n\n{student}\n\n\n\n")
+                score_value = instance.score
+                existing_score = Score.objects.filter(activity=activity, section=section, student=student).first()
+
+                if existing_score:
+                    existing_score.score = score_value
+                    existing_score.save()
+                else:
+                    instance.section = section
+                    instance.activity = activity
+                    instance.save()
             return redirect('section-detail', pk=section_id)
     else:
-        formset = ScoreFormSet(queryset=Score.objects.filter(activity=activity),students=students)
+        formset = ScoreFormSet(queryset=Score.objects.filter(activity=activity, section=section),students=students)
 
     return render(request, 'activitymonitoring/scores_create.html', {'section': section, 'activity': activity, 'formset': formset})
 
@@ -105,38 +116,82 @@ def delete_activity(request, activity_id):
 
     return render(request, 'activitymonitoring/activity_delete.html', {'activity': activity})
 
+def get_percentage(score,totalScore):
+    return (Decimal(score)/Decimal(totalScore))*100
+
+def get_weight_component(componentType):
+    if componentType=="core":
+        return 0.25,0.50,0.25
+    else:
+        return 0.20,0.60, 0.20
+
+def transmute_grade(initial_grade):
+    transmutation_table = {
+        (100, 100): 100,
+        (98.40, 99.99): 99,
+        (96.80, 96.79): 97,
+        (93.60, 95.19): 96,
+        (92, 93.59): 95,
+        (90.40, 91.99): 94,
+        (88.80, 90.30): 93,
+        (87.20, 88.79): 92,
+        (85.60, 87.19): 91,
+        (84, 85.59): 90,
+        (82.40, 83.99): 89,
+        (80.80, 82.39): 88,
+
+        (79.20, 80.79): 87,
+        (77.60, 79.19): 86,
+
+        (36.00, 39.99): 69,
+
+        (12.00, 15.99): 63,
+        (8.00, 11.99): 62,
+        (4.00, 7.99): 61,
+        (0, 3.99): 60,
+    }
+
+    # Check which range the initial grade falls into
+    for grade_range, final_grade in transmutation_table.items():
+        if grade_range[0] <= initial_grade <= grade_range[1]:
+            return final_grade
+    
 def compute_grade(request, section_id):
-    section = Section.objects.get(pk=section_id)
+    section = get_object_or_404(Section, id=section_id)
     students = section.students.all()
-    subject = section.subject
-    activity_types = ['Written Work', 'Performance Task', 'Quarterly Exam']
-
-    grades = []
-
+    activities = Activity.objects.filter(section__id=section_id)
+    # section= get_object_or_404(Section, id=section_id)
+    # students = section.students.all()
+    activity_totalScore = {'WW':0,'PT':0,'QE':0}
+    student_activity_scores = {}
     for student in students:
-        student_scores = Score.objects.filter(student=student,section=section)
+        scores = Score.objects.filter(student=student, section_id=section_id)
+        for score in scores:
+            student_name = student.complete_name
+            activity_type = score.activity.activity_type
+            if student_name not in student_activity_scores:
+                student_activity_scores[student_name] = {'WW': 0, 'PT': 0, 'QE': 0}
+            if activity_type == 'WW':
+                student_activity_scores[student_name]['WW'] += Decimal(score.score)
+            elif activity_type == 'PT':
+                student_activity_scores[student_name]['PT'] += Decimal(score.score)
+            elif activity_type == 'QE':
+                student_activity_scores[student_name]['QE'] += Decimal(score.score)
+    
+    for activity in activities:
+        activity_type = activity.activity_type
+        activity_totalScore[activity_type] += Decimal(activity.totalScore)
+    print(activity_totalScore)
+      
+    # for student_id, activity_scores in student_activity_scores.items():
+    #     print(f"Student ID: {student_name}")
+    #     print(f"Sum of Written Work (WW) Scores: {activity_scores['WW']}")
+    #     print(f"Sum of Performance Task (PT) Scores: {activity_scores['PT']}")
+    #     print(f"Sum of Quarterly Exam (QE) Scores: {activity_scores['QE']}")
+    #     print("\n")
+    #print(f"\n\n\n{students_}\n\n")
+    context = {
+        
+    }
 
-        if student_scores:
-            weighted_scores = []
-            for activity_type in activity_types:
-                activity_scores = student_scores.filter(activity__activity_type=activity_type)
-                if activity_scores:
-                    highest_possible_score = activity_scores.aggregate(Max('score'))['score__max']
-                    learner_total_raw_score = sum(activity.score for activity in activity_scores)
-                    percentage_score = (learner_total_raw_score / highest_possible_score) * 100
-
-                    if subject.category == 'core':
-                        if activity_type == 'Written Work':
-                            weighted_score = percentage_score * 0.25
-                        elif activity_type == 'Performance Task':
-                            weighted_score = percentage_score * 0.50
-                        elif activity_type == 'Quarterly Exam':
-                            weighted_score = percentage_score * 0.25
-                    
-
-                    weighted_scores.append(weighted_score)
-
-            initial_grade = sum(weighted_scores)
-            grades.append({'student': student, 'grade': initial_grade})
-
-    return render(request, 'activitymonitoring/compute_grade.html', {'section': section, 'subject': subject, 'grades': grades})
+    return render(request, 'activitymonitoring/compute_grade.html', context)
