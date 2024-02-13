@@ -74,7 +74,6 @@ def enter_scores(request, section_id, activity_id):
             instances = formset.save(commit=False)
             for instance in instances:
                 student = instance.student
-                print(f"\n\n\n{student}\n\n\n\n")
                 score_value = instance.score
                 existing_score = Score.objects.filter(activity=activity, section=section, student=student).first()
 
@@ -104,8 +103,10 @@ def activity_details(request, section_id, activity_id):
     scores = Score.objects.filter(activity=activity)
 
     missed_students = students.exclude(pk__in=scores.values_list('student', flat=True))
-
-    return render(request, 'activitymonitoring/activity_details.html', {'section': section, 'activity': activity, 'missed_students': missed_students})
+    student_scores = {}
+    for student in students:
+        student_scores[student] = scores
+    return render(request, 'activitymonitoring/activity_details.html', {'section': section, 'activity': activity, 'missed_students': missed_students,'student_scores': student_scores})
 
 def delete_activity(request, activity_id):
     activity = get_object_or_404(Activity, pk=activity_id)
@@ -181,8 +182,12 @@ def compute_grade(request, section_id):
     for activity in activities:
         activity_type = activity.activity_type
         activity_totalScore[activity_type] += Decimal(activity.totalScore)
-    print(activity_totalScore)
-      
+    
+    for student_name, scores in student_activity_scores.items():
+        for activity_type in scores:
+            if activity_totalScore[activity_type] != 0:
+                scores[activity_type] /= Decimal(activity_totalScore[activity_type])
+    print(student_activity_scores)
     # for student_id, activity_scores in student_activity_scores.items():
     #     print(f"Student ID: {student_name}")
     #     print(f"Sum of Written Work (WW) Scores: {activity_scores['WW']}")

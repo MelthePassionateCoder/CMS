@@ -22,7 +22,21 @@
       </div>
 
       <div class="col-md-4">
-        <!-- Add additional information or side content here if needed -->
+        {{ student_scores.items }}
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student, scores in student_scores.items %}
+            <tr>
+              <td>{{ student.complete_name }}</td>
+              <td>{{ scores.score }}</td>
+            </tr>
+            {% endfor %}
       </div>
     </div>
 
