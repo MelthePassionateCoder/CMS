@@ -209,7 +209,7 @@
                     <thead>
                         <tr>
                             <th></th>
-                            {% for month in student.school_months.school_months %}
+                            {% for month in student.school_months_second.school_months %}
                                 <th class="arial-narrow font-8 table-background-color"><span class="additional-content">{{ month.month_name }}</span></th>
                             {% endfor %}
                             <th class="arial-narrow font-8 table-background-color"><span class="additional-content">Total</span></th>
@@ -218,14 +218,14 @@
                     <tbody>
                         <tr>
                             <td class="arial-narrow font-8" style="margin-top:0;"><span class="additional-content">No. of <br>school<br>days<br><br></span></td>
-                            {% for month in student.school_months.school_months %}
+                            {% for month in student.school_months_second.school_months %}
                                 <td style="text-align:center;"><span class="secondsem-info">{{ month.school_days }}</span></td>
                             {% endfor %}
                             <td style="text-align:center;"><span class="secondsem-info">{{ student.school_months.total_school_days }}</span></td>
                         </tr>
                         <tr>
                             <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>present<br><br></span></td>
-                            {% for month in student.school_months.school_months %}
+                            {% for month in student.school_months_second.school_months %}
                                 {% for entry in student.attendance_data %}
                                     {% if month.month_name == entry.month__month_name %}
                                         <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_present }}</span></td>
@@ -236,7 +236,7 @@
                         </tr>
                         <tr>
                             <td class="arial-narrow font-8"><span class="additional-content">No. of <br>days<br>absent<br><br></span></td>
-                            {% for month in student.school_months.school_months %}
+                            {% for month in student.school_months_second.school_months %}
                                 {% for entry in student.attendance_data %}
                                     {% if month.month_name == entry.month__month_name %}
                                         <td style="text-align:center;"><span class="secondsem-info">{{ entry.days_absent }}</span></td>

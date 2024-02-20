@@ -105,7 +105,9 @@ def activity_details(request, section_id, activity_id):
     missed_students = students.exclude(pk__in=scores.values_list('student', flat=True))
     student_scores = {}
     for student in students:
-        student_scores[student] = scores
+        scores_ = Score.objects.filter(activity=activity, student=student).first()
+        if scores_:
+            student_scores[student] = scores_.score
     return render(request, 'activitymonitoring/activity_details.html', {'section': section, 'activity': activity, 'missed_students': missed_students,'student_scores': student_scores})
 
 def delete_activity(request, activity_id):
@@ -120,11 +122,21 @@ def delete_activity(request, activity_id):
 def get_percentage(score,totalScore):
     return (Decimal(score)/Decimal(totalScore))*100
 
-def get_weight_component(componentType):
-    if componentType=="core":
-        return 0.25,0.50,0.25
+def get_weight_component(scores, subject_type):
+    if subject_type == "core":
+        ww_weight, pt_weight, qe_weight = 0.25, 0.50, 0.25
     else:
-        return 0.20,0.60, 0.20
+        ww_weight, pt_weight, qe_weight = 0.20, 0.60, 0.20
+
+    weighted_scores = {
+        'WW': Decimal(Decimal(scores['WW']) * Decimal(ww_weight)),
+        'PT': Decimal(Decimal(scores['PT']) * Decimal(pt_weight)),
+        'QE': Decimal(Decimal(scores['QE']) * Decimal(qe_weight))
+    }
+    
+    total_weighted_score = sum(weighted_scores.values())
+    
+    return total_weighted_score
 
 def transmute_grade(initial_grade):
     transmutation_table = {
@@ -187,7 +199,22 @@ def compute_grade(request, section_id):
         for activity_type in scores:
             if activity_totalScore[activity_type] != 0:
                 scores[activity_type] /= Decimal(activity_totalScore[activity_type])
-    print(student_activity_scores)
+                scores[activity_type] *= 100
+    context_list = []
+    for student_name, scores in student_activity_scores.items():
+        weight_score = get_weight_component(scores, section.subject.category)
+        final_grade = transmute_grade(weight_score)
+        context = {
+            'student': student_name,
+            'ww': scores['WW'],
+            'pt': scores['PT'],
+            'qe': scores['QE'],
+            'initial_grade': weight_score,
+            'final_grade': final_grade
+        }
+        context_list.append(context)
+        
+    return render(request, 'activitymonitoring/compute_grade.html', {'context_list': context_list})
     # for student_id, activity_scores in student_activity_scores.items():
     #     print(f"Student ID: {student_name}")
     #     print(f"Sum of Written Work (WW) Scores: {activity_scores['WW']}")
@@ -195,8 +222,6 @@ def compute_grade(request, section_id):
     #     print(f"Sum of Quarterly Exam (QE) Scores: {activity_scores['QE']}")
     #     print("\n")
     #print(f"\n\n\n{students_}\n\n")
-    context = {
-        
-    }
+    
 
-    return render(request, 'activitymonitoring/compute_grade.html', context)
+    

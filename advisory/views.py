@@ -77,6 +77,9 @@ def report_cards_page(request, advisory_id):
     school_months = SchoolMonth.objects.filter(school_year=advisory.school_year, semester=1).order_by('month_order')
     total_school_days = sum(month.school_days for month in school_months)
     school_month = {'school_months':school_months,'total_school_days':total_school_days}
+    school_months_ = SchoolMonth.objects.filter(school_year=advisory.school_year, semester=2).order_by('month_order')
+    total_school_days_ = sum(month.school_days for month in school_months_)
+    school_month_ = {'school_months':school_months_,'total_school_days':total_school_days_}
     student_data = []
     present_data = []
     days_absent = []
@@ -165,6 +168,7 @@ def report_cards_page(request, advisory_id):
             'total_days_present': total_days_present,
             'total_days_absent': total_days_absent,
             'school_months':school_month,
+            'school_months_second': school_month_,
             'grouped_first_semester_data': grouped_first_semester_data,
             'grouped_second_semester_data': grouped_second_semester_data,
             'grouped_data_observed_values': grouped_data_observed_values,

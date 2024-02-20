@@ -16,16 +16,15 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Loop through students and display their details -->
-                {% for student in students %}
-                    <tr>
-                        <td>{{ student.id }}</td>
-                        <td>{{ student.score_WW }}</td>
-                        <td>{{ student.score_PT }}</td>
-                        <td>{{ student.score_QE }}</td>
-                        <td>{{ student.initial_grade }}</td>
-                        <td>{{ student.final_grade }}</td>
-                    </tr>
+                {% for context in context_list %}
+                <tr>
+                    <td>{{ context.student }}</td>
+                    <td>{{ context.ww|floatformat:"3" }}</td>
+                    <td>{{ context.pt|floatformat:"3" }}</td>
+                    <td>{{ context.qe|floatformat:"3" }}</td>
+                    <td>{{ context.initial_grade|floatformat:"3" }}</td>
+                    <td>{{ context.final_grade|floatformat:"3" }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

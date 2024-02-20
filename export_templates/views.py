@@ -223,11 +223,18 @@ def generate_excel_template_manual_input(request, advisory_id):
     advisory = get_object_or_404(Advisory, id=advisory_id)
     students = advisory.students.all()
     school_months = SchoolMonth.objects.filter(school_year=advisory.school_year, semester=1).order_by('month_order')
-
+    school_months_ = SchoolMonth.objects.filter(school_year=advisory.school_year, semester=2).order_by('month_order')
     
     data = {'Advisory': [], 'Student': [], 'Month': [],'Days Present': [], 'Days Absent':[]}
     for student in students:
         for school_month in school_months:
+            data['Advisory'].append(advisory.section)
+            data['Student'].append(student.complete_name)
+            data['Month'].append(school_month.month_name)
+            data['Days Present'].append('')
+            data['Days Absent'].append('')
+        
+        for school_month in school_months_:
             data['Advisory'].append(advisory.section)
             data['Student'].append(student.complete_name)
             data['Month'].append(school_month.month_name)
